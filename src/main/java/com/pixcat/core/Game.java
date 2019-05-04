@@ -1,15 +1,12 @@
 package com.pixcat.core;
 
+import com.pixcat.graphics.Renderer;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
 
-import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class Game {
-    private long window;
+    private Renderer renderer;
 
     private void run() {
         System.out.println("Chyba działa XD");
@@ -20,45 +17,40 @@ public class Game {
     }
 
     private void init() {
-        GLFWErrorCallback.createPrint(System.err).set();
+        initGLFW();
+        renderer = new Renderer(300, 300, "OurCraft");
 
-        if (glfwInit() == false)
-            throw new IllegalStateException("Unable to initialize GLFW");
-
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-        window = glfwCreateWindow(300, 300, "OurCraft", NULL, NULL);
-        if (window == NULL)
-            throw new RuntimeException("Failed to create the GLFW window");
-
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+        glfwSetKeyCallback(renderer.getWindowHandle(), (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 glfwSetWindowShouldClose(window, true);
         });
+    }
 
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
-
-        glfwShowWindow(window);
+    private void initGLFW() {
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (glfwInit() == false)
+            throw new IllegalStateException("Unable to initialize GLFW");
     }
 
     private void loop() {
-        GL.createCapabilities();
+        while (renderer.windowIsOpen()) {
+            renderer.beginFrame();
+            renderer.endFrame();
 
-        while (!glfwWindowShouldClose(window)) {
-            glClearColor(((float) Math.sin(glfwGetTime()) + 1.0f) * 0.5f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
 
     private void shutdown() {
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
+        renderer.destroyWindow();
+        shutdownGLFW();
+    }
+
+    private void shutdownGLFW() {
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        GLFWErrorCallback usedErrorCallback = glfwSetErrorCallback(null);
+        if (usedErrorCallback != null)
+            usedErrorCallback.free();
     }
 
     public static void main(String[] args) {
