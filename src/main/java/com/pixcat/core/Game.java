@@ -7,10 +7,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Game {
     private Renderer renderer;
+    private InputBuffer input;
 
     private void run() {
-        System.out.println("Chyba działa XD");
-
         init();
         loop();
         shutdown();
@@ -19,11 +18,7 @@ public class Game {
     private void init() {
         initGLFW();
         renderer = new Renderer(300, 300, "OurCraft");
-
-        glfwSetKeyCallback(renderer.getWindowHandle(), (window, key, scancode, action, mods) -> {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-                glfwSetWindowShouldClose(window, true);
-        });
+        input = new InputBuffer(renderer.getWindowHandle());
     }
 
     private void initGLFW() {
@@ -37,7 +32,7 @@ public class Game {
             renderer.beginFrame();
             renderer.endFrame();
 
-            glfwPollEvents();
+            input.update();
         }
     }
 
