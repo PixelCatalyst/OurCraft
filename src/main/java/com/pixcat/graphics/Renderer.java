@@ -26,7 +26,10 @@ public class Renderer {
     }
 
     public boolean windowIsOpen() {
-        return !glfwWindowShouldClose(windowHandle);
+        boolean isOpen = false;
+        if (windowHandle != 0)
+            isOpen = !glfwWindowShouldClose(windowHandle);
+        return isOpen;
     }
 
     public void beginFrame() {
@@ -39,7 +42,11 @@ public class Renderer {
     }
 
     public void destroyWindow() {
-        glfwFreeCallbacks(windowHandle);
-        glfwDestroyWindow(windowHandle);
+        if (windowHandle != 0) {
+            glfwSetWindowShouldClose(windowHandle, true);
+            glfwFreeCallbacks(windowHandle);
+            glfwDestroyWindow(windowHandle);
+            windowHandle = 0;
+        }
     }
 }
