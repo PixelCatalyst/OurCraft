@@ -12,6 +12,7 @@ public class Game {
     private Renderer renderer;
     private InputBuffer input;
     private World world;
+    private Timer timer;
     private GameState currentState;
 
     private void run() {
@@ -25,6 +26,7 @@ public class Game {
         renderer = new Renderer(300, 300, "OurCraft");
         input = new InputBuffer(renderer.getWindowHandle());
         world = new World("random seed");
+        timer = new Timer();
         currentState = new MenuGameState(world);
         currentState.onEnter();
     }
@@ -66,10 +68,8 @@ public class Game {
     }
 
     private void update() {
-        //TODO time
-        if (currentState != null) {
-            currentState.update(0.0);
-        }
+        if (currentState != null)
+            currentState.update(timer.getElapsedSeconds());
     }
 
     private void shutdown() {
