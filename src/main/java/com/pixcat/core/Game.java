@@ -23,7 +23,9 @@ public class Game {
 
     private void init() {
         initGLFW();
-        renderer = new Renderer(300, 300, "OurCraft");
+        renderer = new Renderer(3, 3);
+        renderer.createWindow(854, 480, "OurCraft");
+        renderer.centerWindow();
         input = new InputBuffer(renderer.getWindowHandle());
         world = new World("random seed");
         timer = new Timer();

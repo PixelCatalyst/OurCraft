@@ -1,35 +1,39 @@
 package com.pixcat.graphics;
 
-import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class Renderer {
-    private long windowHandle;
+    private Window window;
 
-    public Renderer(int windowWidth, int windowHeight, String windowText) {
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        windowHandle = glfwCreateWindow(windowWidth, windowHeight, windowText, NULL, NULL);
-        if (windowHandle == NULL)
-            throw new RuntimeException("Failed to create the GLFW window");
-        glfwMakeContextCurrent(windowHandle);
-        glfwSwapInterval(1);
-        GL.createCapabilities();
+    public Renderer(int oglMajorVersion, int oglMinorVersion) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, oglMajorVersion);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, oglMinorVersion);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    }
+
+    public void createWindow(int width, int height, String text) {
+        window = new Window(width, height, text);
+        window.bindAsCurrent();
     }
 
     public long getWindowHandle() {
-        return windowHandle;
+        return window.getHandle();
     }
 
     public boolean windowIsOpen() {
-        boolean isOpen = false;
-        if (windowHandle != 0)
-            isOpen = !glfwWindowShouldClose(windowHandle);
-        return isOpen;
+        if (window == null)
+            return false;
+        return window.isOpen();
+    }
+
+    public void centerWindow() {
+        window.center();
+    }
+
+    public void destroyWindow() {
+        window.destroy();
     }
 
     public void beginFrame() {
@@ -38,15 +42,6 @@ public class Renderer {
     }
 
     public void endFrame() {
-        glfwSwapBuffers(windowHandle);
-    }
-
-    public void destroyWindow() {
-        if (windowHandle != 0) {
-            glfwSetWindowShouldClose(windowHandle, true);
-            glfwFreeCallbacks(windowHandle);
-            glfwDestroyWindow(windowHandle);
-            windowHandle = 0;
-        }
+        window.swapBuffers();
     }
 }
