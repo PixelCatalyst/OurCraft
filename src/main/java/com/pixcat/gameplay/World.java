@@ -1,6 +1,8 @@
 package com.pixcat.gameplay;
 
 import com.pixcat.noisegen.TerrainGenerator;
+import com.pixcat.voxel.SpatialStructure;
+import com.pixcat.voxel.VirtualArray;
 
 import java.util.ArrayList;
 
@@ -8,6 +10,7 @@ public class World implements Subject {
     private Camera playerCamera;
     private Metrics playerMetrics;
     private TerrainGenerator terrainGen;
+    private SpatialStructure voxels;
 
     private ArrayList<Observer> observers;
 
@@ -15,6 +18,7 @@ public class World implements Subject {
         playerCamera = new Camera();
         playerMetrics = new Metrics();
         terrainGen = new TerrainGenerator(generatorSeed.hashCode());
+        voxels = new VirtualArray(12);
         observers = new ArrayList<>();
     }
 
