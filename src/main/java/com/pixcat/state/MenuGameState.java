@@ -20,7 +20,7 @@ public class MenuGameState implements GameState {
 
     @Override
     public GameState handleInput(InputBuffer input) {
-        if (input.isKeyDown(GLFW_KEY_ESCAPE))
+        if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
             return null;
         //TODO
         return this;
