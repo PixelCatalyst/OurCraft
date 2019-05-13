@@ -9,6 +9,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
     private long handle;
+    private int[] widthBuffer;
+    private int[] heightBuffer;
 
     public Window(int width, int height, String text) {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
@@ -16,10 +18,22 @@ public class Window {
         handle = glfwCreateWindow(width, height, text, NULL, NULL);
         if (handle == 0)
             throw new RuntimeException("Failed to create the GLFW window");
+        widthBuffer = new int[1];
+        heightBuffer = new int[1];
     }
 
     public long getHandle() {
         return handle;
+    }
+
+    public int getWidth() {
+        glfwGetWindowSize(handle, widthBuffer, heightBuffer);
+        return widthBuffer[0];
+    }
+
+    public int getHeight() {
+        glfwGetWindowSize(handle, widthBuffer, heightBuffer);
+        return heightBuffer[0];
     }
 
     public boolean isOpen() {
