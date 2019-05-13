@@ -8,6 +8,7 @@ apply plugin: 'application'
 import org.gradle.internal.os.OperatingSystem
 
 project.ext.lwjglVersion = "3.2.1"
+project.ext.jomlVersion = "1.9.14"
 
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
@@ -36,6 +37,7 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+    implementation "org.joml:joml:${jomlVersion}"
 }
 group 'com.pixcat'
 version '1.0-SNAPSHOT'
