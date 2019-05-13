@@ -26,6 +26,7 @@ public class Game {
         renderer = new Renderer(3, 3);
         renderer.createWindow(854, 480, "OurCraft");
         renderer.centerWindow();
+        renderer.initAssets();
         input = new InputBuffer(renderer.getWindowHandle());
         world = new World("random seed");
         timer = new Timer();
@@ -76,6 +77,7 @@ public class Game {
 
     private void shutdown() {
         renderer.destroyWindow();
+        renderer.cleanup();
         shutdownGLFW();
     }
 

@@ -23,15 +23,18 @@ public class Renderer {
     public void createWindow(int width, int height, String text) {
         window = new Window(width, height, text);
         window.bindAsCurrent();
+    }
 
-        //TODO more shaders, init method(?)
-
+    public void initAssets() throws IllegalStateException {
+        if (window == null)
+            throw new IllegalStateException("Window not created before initializing assets");
         shaderProgram = new ShaderProgram();
         FileManager fm = FileManager.getInstance();
         shaderProgram.createVertexShader(fm.loadText("vertex.vs"));
         shaderProgram.createFragmentShader(fm.loadText("fragment.fs"));
         shaderProgram.link();
 
+        //TODO more shaders
         //TODO camera class
     }
 
@@ -80,5 +83,9 @@ public class Renderer {
 
     public void endFrame() {
         window.swapBuffers();
+    }
+
+    public void cleanup() {
+        shaderProgram.cleanup();
     }
 }
