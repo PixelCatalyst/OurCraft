@@ -1,5 +1,12 @@
 package com.pixcat.graphics;
 
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.FloatBuffer;
+import java.util.Map;
+import java.util.HashMap;
+
 import static org.lwjgl.opengl.GL33.*;
 
 public class ShaderProgram {
@@ -7,10 +14,13 @@ public class ShaderProgram {
     private int vertexShaderID;
     private int fragmentShaderID;
 
+    private final Map<String, Integer> uniforms;
+
     public ShaderProgram() throws IllegalStateException {
         programID = glCreateProgram();
         if (programID == 0)
             throw new IllegalStateException("Error initializing shader");
+        uniforms = new HashMap<>();
     }
 
     public void createVertexShader(String shaderCode) throws IllegalStateException {
@@ -52,6 +62,26 @@ public class ShaderProgram {
     private String getCurrentInfoLog() {
         final int maxLength = 1024;
         return glGetProgramInfoLog(programID, maxLength);
+    }
+
+    public void createUniform(String uniformName) throws IllegalStateException {
+        if (programID == 0)
+            throw new IllegalStateException("Could not create uniform in not compiled shader");
+        int uniformLocation = glGetUniformLocation(programID, uniformName);
+        if (uniformLocation < 0)
+            throw new IllegalStateException("Could not find uniform: " + uniformName);
+        uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void setUniform(String uniformName, Matrix4f value) throws IllegalStateException {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(16); //4x4 floats
+            value.get(buffer);
+            Integer location = uniforms.get(uniformName);
+            if (location == null)
+                throw new IllegalStateException("Tried to set non existing uniform");
+            glUniformMatrix4fv(location, false, buffer);
+        }
     }
 
     public void bind() {
