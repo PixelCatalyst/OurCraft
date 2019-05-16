@@ -79,9 +79,16 @@ public class ShaderProgram {
             value.get(buffer);
             Integer location = uniforms.get(uniformName);
             if (location == null)
-                throw new IllegalStateException("Tried to set non existing uniform");
+                throw new IllegalStateException("Tried to set non existing matrix uniform");
             glUniformMatrix4fv(location, false, buffer);
         }
+    }
+
+    public void setUniform(String uniformName, int value) throws IllegalStateException {
+        Integer location = uniforms.get(uniformName);
+        if (location == null)
+            throw new IllegalStateException("Tried to set non existing int uniform");
+        glUniform1i(location, value);
     }
 
     public void bind() {
