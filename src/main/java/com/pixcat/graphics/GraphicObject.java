@@ -6,10 +6,9 @@ import org.joml.Matrix4f;
 
 public class GraphicObject {
     private Mesh mesh;
+    private Texture texture;
     private Vector3f position;
     private Matrix4f worldMatrix;
-
-    //TODO Texture texture/int textureID...
 
     public GraphicObject(Mesh mesh) {
         this.mesh = mesh;
@@ -19,6 +18,14 @@ public class GraphicObject {
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
     public void setPosition(float x, float y, float z) {

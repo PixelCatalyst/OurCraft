@@ -39,8 +39,8 @@ public class Renderer {
         shaderProgram.createFragmentShader(fm.loadText("fragment.fs"));
         shaderProgram.link();
         shaderProgram.createUniform("wvpMatrix");
+        shaderProgram.createUniform("textureSampler");
         transform = new Transformation();
-        //TODO textures
     }
 
     public long getWindowHandle() {
@@ -71,6 +71,7 @@ public class Renderer {
             glViewport(0, 0, viewportWidth, viewportHeight);
         }
         shaderProgram.bind();
+        shaderProgram.setUniform("textureSampler", 0);
     }
 
     public void setBackgroundColor(float red, float green, float blue) {
@@ -90,13 +91,17 @@ public class Renderer {
     }
 
     public void draw(GraphicObject object) {
+        Texture tex = object.getTexture();
+        tex.bind();
         Mesh mesh = object.getMesh();
         Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, object.getWorldMatrix());
         shaderProgram.setUniform("wvpMatrix", wvpMatrix);
         glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
     }
 
