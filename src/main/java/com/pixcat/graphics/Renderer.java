@@ -1,7 +1,9 @@
 package com.pixcat.graphics;
 
 import com.pixcat.core.FileManager;
+import com.pixcat.gameplay.Camera;
 import com.pixcat.mesh.Mesh;
+import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
@@ -12,6 +14,8 @@ public class Renderer {
     private int viewportHeight;
 
     private ShaderProgram shaderProgram;
+    private Transformation transform;
+    private Matrix4f projectionMatrix;
 
     public Renderer(int oglMajorVersion, int oglMinorVersion) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, oglMajorVersion);
@@ -23,6 +27,7 @@ public class Renderer {
     public void createWindow(int width, int height, String text) {
         window = new Window(width, height, text);
         window.bindAsCurrent();
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void initAssets() throws IllegalStateException {
@@ -33,9 +38,9 @@ public class Renderer {
         shaderProgram.createVertexShader(fm.loadText("vertex.vs"));
         shaderProgram.createFragmentShader(fm.loadText("fragment.fs"));
         shaderProgram.link();
-
-        //TODO more shaders
-        //TODO camera class
+        shaderProgram.createUniform("wvpMatrix");
+        transform = new Transformation();
+        //TODO textures
     }
 
     public long getWindowHandle() {
@@ -65,23 +70,38 @@ public class Renderer {
             viewportHeight = windowHeight;
             glViewport(0, 0, viewportWidth, viewportHeight);
         }
+        shaderProgram.bind();
     }
 
     public void setBackgroundColor(float red, float green, float blue) {
         glClearColor(red, green, blue, 0.0f);
     }
 
-    public void drawMesh(Mesh m) {
-        shaderProgram.bind();
-        glBindVertexArray(m.getVaoID());
+    public void setPerspective(Camera camera) {
+        projectionMatrix = transform.getPerspectiveProjection(camera.getFieldOfView(),
+                window.getAspectRatio(),
+                camera.getNearClippingDist(),
+                camera.getFarClippingDist());
+        projectionMatrix.mul(camera.getViewMatrix());
+    }
+
+    public void setOrthographic() {
+        projectionMatrix = transform.getOrthographicProjection(window.getWidth(), window.getHeight());
+    }
+
+    public void draw(GraphicObject object) {
+        Mesh mesh = object.getMesh();
+        Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, object.getWorldMatrix());
+        shaderProgram.setUniform("wvpMatrix", wvpMatrix);
+        glBindVertexArray(mesh.getVaoID());
         glEnableVertexAttribArray(0);
-        glDrawElements(GL_TRIANGLES, m.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glBindVertexArray(0);
-        shaderProgram.unbind();
     }
 
     public void endFrame() {
+        shaderProgram.unbind();
         window.swapBuffers();
     }
 
