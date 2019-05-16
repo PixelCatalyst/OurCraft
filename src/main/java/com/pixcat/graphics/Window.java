@@ -38,7 +38,7 @@ public class Window {
 
     public float getAspectRatio() {
         glfwGetWindowSize(handle, widthBuffer, heightBuffer);
-        return (float) (widthBuffer[0] / heightBuffer[0]);
+        return (float) (widthBuffer[0]) / heightBuffer[0];
     }
 
     public boolean isOpen() {
