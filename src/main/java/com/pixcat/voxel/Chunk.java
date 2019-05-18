@@ -2,9 +2,9 @@ package com.pixcat.voxel;
 
 public interface Chunk {
 
-    byte getVoxelID(int x, int y, int z);
+    byte getVoxelID(int y, int x, int z);
 
-    void setVoxelID(int x, int y, int z, byte ID);
+    void setVoxelID(int y, int x, int z, byte ID);
 
     int getSize();
 }

@@ -9,11 +9,11 @@ public class ArrayChunk implements Chunk {
     }
 
     @Override
-    public byte getVoxelID(int x, int y, int z) {
+    public byte getVoxelID(int y, int x, int z) {
         return voxels[x][y][z];
     }
 
-    public void setVoxelID(int x, int y, int z, byte ID) {
+    public void setVoxelID(int y, int x, int z, byte ID) {
         voxels[x][y][z] = ID;
     }
 
