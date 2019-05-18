@@ -30,6 +30,10 @@ public class GraphicObject {
         this.texture = texture;
     }
 
+    public Vector3f getPosition() {
+        return new Vector3f(position);
+    }
+
     public void setPosition(float x, float y, float z) {
         position.x = x;
         position.y = y;

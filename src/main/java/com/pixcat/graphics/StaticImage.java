@@ -21,6 +21,14 @@ public class StaticImage extends GraphicObject {
         return (int) (height * scale);
     }
 
+    public int getX() {
+        return (int) getPosition().x;
+    }
+
+    public int getY() {
+        return (int) getPosition().y;
+    }
+
     public void setPosition(int x, int y) {
         super.setPosition((float) x, (float) y, 0.0f);
     }
