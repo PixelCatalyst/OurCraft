@@ -4,7 +4,7 @@ public interface Chunk {
 
     byte getVoxelID(int x, int y, int z);
 
-    void setVoxelID(int x, int y, int z, byte id);
+    void setVoxelID(int x, int y, int z, byte ID);
 
     int getSize();
 }

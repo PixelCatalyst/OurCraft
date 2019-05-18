@@ -4,7 +4,7 @@ public interface SpatialStructure {
 
     void addVoxelType(Block block);
 
-    Block getVoxelFromID(byte id);
+    Block getVoxelFromID(byte ID);
 
     Block getVoxelFromName(String name);
 

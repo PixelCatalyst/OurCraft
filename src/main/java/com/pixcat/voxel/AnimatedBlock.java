@@ -3,8 +3,8 @@ package com.pixcat.voxel;
 public class AnimatedBlock extends SolidBlock {
     private double secondsPerFrame;
 
-    public AnimatedBlock(byte id, String name, double secondsPerFrame) {
-        super(id, name);
+    public AnimatedBlock(byte ID, String name, double secondsPerFrame) {
+        super(ID, name);
         this.secondsPerFrame = Math.abs(secondsPerFrame);
     }
 

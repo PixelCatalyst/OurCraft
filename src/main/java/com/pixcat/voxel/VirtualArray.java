@@ -20,11 +20,11 @@ public class VirtualArray implements SpatialStructure {
     }
 
     @Override
-    public Block getVoxelFromID(byte id) { //TODO possible unification with getVoxelFromName
+    public Block getVoxelFromID(byte ID) { //TODO possible unification with getVoxelFromName
         Iterator<Block> iterator = voxelTypes.iterator();
         for (int i = 0; i < voxelTypes.size(); ++i) {
             Block currentBlock = iterator.next();
-            if (currentBlock.getID() == id)
+            if (currentBlock.getID() == ID)
                 return currentBlock;
         }
         return null;

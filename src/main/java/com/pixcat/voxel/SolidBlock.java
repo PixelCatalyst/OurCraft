@@ -3,13 +3,13 @@ package com.pixcat.voxel;
 import java.util.Objects;
 
 public class SolidBlock implements Block {
-    private byte id;
+    private byte ID;
     private String name;
 
-    public SolidBlock(byte id, String name) {
-        if (id == 0)
+    public SolidBlock(byte ID, String name) {
+        if (ID == 0)
             throw new IllegalArgumentException("Block with ID=0 is reserved");
-        this.id = id;
+        this.ID = ID;
         if (name == null)
             this.name = "unknown";
         else
@@ -18,7 +18,7 @@ public class SolidBlock implements Block {
 
     @Override
     public byte getID() {
-        return id;
+        return ID;
     }
 
     @Override
@@ -33,11 +33,11 @@ public class SolidBlock implements Block {
         if (o == null || getClass() != o.getClass())
             return false;
         SolidBlock that = (SolidBlock) o;
-        return (id == that.id) || Objects.equals(name, that.name);
+        return (ID == that.ID) || Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ID);
     }
 }
