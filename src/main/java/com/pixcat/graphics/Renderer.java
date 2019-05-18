@@ -27,7 +27,6 @@ public class Renderer {
     public void createWindow(int width, int height, String text) {
         window = new Window(width, height, text);
         window.bindAsCurrent();
-        glEnable(GL_DEPTH_TEST);
     }
 
     public void initAssets() throws IllegalStateException {
@@ -84,10 +83,12 @@ public class Renderer {
                 camera.getNearClippingDist(),
                 camera.getFarClippingDist());
         projectionMatrix.mul(camera.getViewMatrix());
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void setOrthographic() {
         projectionMatrix = transform.getOrthographicProjection(window.getWidth(), window.getHeight());
+        glDisable(GL_DEPTH_TEST);
     }
 
     public void draw(GraphicObject object) {
