@@ -42,4 +42,10 @@ public class GUIFactory {
         image.setTexture(texture);
         return image;
     }
+
+    public Button makeButton(int width, int height, Texture texture) {
+        Button button = new Button(modelMesh, width, height);
+        button.setTexture(texture);
+        return button;
+    }
 }
