@@ -105,10 +105,27 @@ public class Renderer {
         Mesh mesh = object.getMesh();
         Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, object.getWorldMatrix());
         shaderProgram.setUniform("wvpMatrix", wvpMatrix);
-        glBindVertexArray(mesh.getVaoID());
+        drawMesh(mesh);
+    }
+
+    public void draw(GraphicBatch batch) {
+        batch.beginIteration();
+        while (batch.hasNext()) {
+            Texture tex = batch.getTexture();
+            tex.bind();
+            Mesh mesh = batch.getMesh();
+            Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, batch.getWorldMatrix());
+            shaderProgram.setUniform("wvpMatrix", wvpMatrix);
+            drawMesh(mesh);
+            batch.next();
+        }
+    }
+
+    private void drawMesh(Mesh m) {
+        glBindVertexArray(m.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, m.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
