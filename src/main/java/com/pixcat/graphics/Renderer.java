@@ -46,6 +46,14 @@ public class Renderer {
         return window.getHandle();
     }
 
+    public int getWindowWidth() {
+        return window.getWidth();
+    }
+
+    public int getWindowHeight() {
+        return window.getHeight();
+    }
+
     public boolean windowIsOpen() {
         if (window == null)
             return false;
