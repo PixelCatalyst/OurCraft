@@ -8,7 +8,7 @@ public class GraphicObject {
     private Mesh mesh;
     private Texture texture;
     private Vector3f position;
-    private float scale;
+    protected float scale;
     private Matrix4f worldMatrix;
 
     public GraphicObject(Mesh mesh) {
