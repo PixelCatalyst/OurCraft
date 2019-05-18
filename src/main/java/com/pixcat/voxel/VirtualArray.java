@@ -42,6 +42,13 @@ public class VirtualArray implements SpatialStructure {
     }
 
     @Override
+    public void updateBlocks(double elapsedTime) {
+        Iterator<Block> iterator = voxelTypes.iterator();
+        for (int i = 0; i < voxelTypes.size(); ++i)
+            iterator.next().update(elapsedTime);
+    }
+
+    @Override
     public Chunk getChunk(int x, int y, int z) {
         return chunks.get(new Coord3Int(x, y, z));
     }

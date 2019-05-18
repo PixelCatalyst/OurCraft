@@ -1,15 +1,21 @@
 package com.pixcat.voxel;
 
+import com.pixcat.graphics.Texture;
+
 import java.util.Objects;
 
 public class SolidBlock implements Block {
     private byte ID;
     private String name;
+    protected Texture texture;
 
-    public SolidBlock(byte ID, String name) {
+    public SolidBlock(byte ID, String name, Texture texture) {
         if (ID == 0)
             throw new IllegalArgumentException("Block with ID=0 is reserved");
         this.ID = ID;
+        if (texture == null)
+            throw new IllegalArgumentException("Block must have non null texture");
+        this.texture = texture;
         if (name == null)
             this.name = "unknown";
         else
@@ -24,6 +30,10 @@ public class SolidBlock implements Block {
     @Override
     public String getName() {
         return name;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     @Override

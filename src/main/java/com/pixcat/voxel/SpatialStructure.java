@@ -8,6 +8,8 @@ public interface SpatialStructure {
 
     Block getVoxelFromName(String name);
 
+    void updateBlocks(double elapsedTime);
+
     Chunk getChunk(int x, int y, int z);
 
     void putChunk(int x, int y, int z, Chunk toPut);
