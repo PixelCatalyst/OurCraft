@@ -33,7 +33,7 @@ public class Game {
         timer = new Timer();
         currentState = new MenuGameState(world);
 //        currentState = new TestGameState(world);
-        currentState.onEnter();
+        currentState.onEnter(renderer);
     }
 
     private void initGLFW() {
@@ -62,12 +62,14 @@ public class Game {
         input.update();
         GameState nextState = currentState.handleInput(input);
         if (nextState == null) {
-            currentState.onExit();
+            currentState.onExit(renderer);
+            input.clearKeyBuffer();
             currentState = null;
             renderer.destroyWindow();
         } else if (nextState != currentState) {
-            currentState.onExit();
-            nextState.onEnter();
+            currentState.onExit(renderer);
+            input.clearKeyBuffer();
+            nextState.onEnter(renderer);
             currentState = nextState;
         }
     }

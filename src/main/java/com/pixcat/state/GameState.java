@@ -13,11 +13,11 @@ public interface GameState {
         //Do nothing
     }
 
-    default void onEnter() {
+    default void onEnter(Renderer renderer) {
         //Do nothing
     }
 
-    default void onExit() {
+    default void onExit(Renderer renderer) {
         //Do nothing
     }
 }

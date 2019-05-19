@@ -59,7 +59,7 @@ public class MenuGameState implements GameState {
             return new PlayGameState(this.world);
 
         MouseAction mouseAction = input.getMouseAction();
-        if (playButton.wasTouched(mouseAction))
+        if (playButton.wasClicked(mouseAction, MouseAction.Button.LEFT))
             return new PlayGameState(world);
         if (exitButton.wasTouched(mouseAction))
             return null;

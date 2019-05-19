@@ -16,8 +16,12 @@ public class InputBuffer {
     private static class KeyCallback extends GLFWKeyCallback {
         Map<Integer, Boolean> stateBuffer;
 
-        KeyCallback() {
+        public void clearBuffer() {
             stateBuffer = new HashMap<>();
+        }
+
+        KeyCallback() {
+            clearBuffer();
         }
 
         @Override
@@ -143,5 +147,9 @@ public class InputBuffer {
 
     public void update() {
         glfwPollEvents();
+    }
+
+    public void clearKeyBuffer() {
+        keyCallback.clearBuffer();
     }
 }

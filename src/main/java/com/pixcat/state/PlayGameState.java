@@ -6,6 +6,8 @@ import com.pixcat.graphics.Renderer;
 import com.pixcat.core.InputBuffer;
 import org.joml.Vector3f;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class PlayGameState implements GameState {
     private World world;
     private Achievements achievements;
@@ -28,6 +30,13 @@ public class PlayGameState implements GameState {
     @Override
     public GameState handleInput(InputBuffer input) {
         //TODO
+
+        if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
+            return new MenuGameState(world); // back to main menu
+        if (input.isKeyboardKeyDown(GLFW_KEY_Q))
+            return null; // exit game
+
+
         return this;
     }
 

@@ -15,4 +15,12 @@ public class Button extends StaticImage {
         boolean inBottom = (action.getY() <= (super.getY() + super.getHeight()));
         return inLeftTop && inRight && inBottom;
     }
+
+    public boolean wasClicked(MouseAction action) {
+        return wasTouched(action) && action.getEvent() == MouseAction.Event.RELEASE;
+    }
+
+    public boolean wasClicked(MouseAction action, MouseAction.Button mouseButton) {
+        return wasClicked(action) && action.getButton() == mouseButton;
+    }
 }
