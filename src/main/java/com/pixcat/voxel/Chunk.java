@@ -6,6 +6,10 @@ import com.pixcat.mesh.Mesher;
 
 public interface Chunk {
 
+    Coord3Int getWorldPosition();
+
+    void setWorldPosition(Coord3Int position);
+
     byte getVoxelID(int y, int x, int z);
 
     void setVoxelID(int y, int x, int z, byte ID);

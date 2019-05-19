@@ -7,12 +7,23 @@ import com.pixcat.mesh.Mesher;
 public class ArrayChunk implements Chunk {
     private static final int size = 16;
     private byte[][][] voxels;
+    private Coord3Int position;
     private GraphicBatch graphicBatch;
     private boolean dirtyFlag;
 
     public ArrayChunk() {
         voxels = new byte[size][size][size];
         dirtyFlag = true;
+    }
+
+    @Override
+    public Coord3Int getWorldPosition() {
+        return position;
+    }
+
+    @Override
+    public void setWorldPosition(Coord3Int position) {
+        this.position = position;
     }
 
     @Override

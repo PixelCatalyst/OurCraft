@@ -49,7 +49,9 @@ public class VirtualArray implements SpatialStructure {
 
     @Override
     public void putChunk(int y, int x, int z, Chunk toPut) {
-        chunks.put(new Coord3Int(y, x, z), toPut);
+        Coord3Int worldPos = new Coord3Int(y, x, z);
+        toPut.setWorldPosition(worldPos);
+        chunks.put(worldPos, toPut);
         //TODO unloading excessive chunks
     }
 

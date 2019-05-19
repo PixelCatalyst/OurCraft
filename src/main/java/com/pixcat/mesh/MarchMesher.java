@@ -5,6 +5,7 @@ import com.pixcat.graphics.GraphicBatch;
 import com.pixcat.graphics.GraphicObject;
 import com.pixcat.graphics.Texture;
 import com.pixcat.voxel.Chunk;
+import com.pixcat.voxel.Coord3Int;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -154,10 +155,11 @@ public class MarchMesher implements Mesher {
         GraphicBatch chunkBatch = new GraphicBatch();
         VisibleFaces visibleFaces = new VisibleFaces();
         final byte air = (byte) 0;
+        final int chunkSize = toMesh.getSize();
 
-        for (int y = 0; y < toMesh.getSize(); ++y) {
-            for (int x = 0; x < toMesh.getSize(); ++x) {
-                for (int z = 0; z < toMesh.getSize(); ++z) {
+        for (int y = 0; y < chunkSize; ++y) {
+            for (int x = 0; x < chunkSize; ++x) {
+                for (int z = 0; z < chunkSize; ++z) {
                     byte voxelID = toMesh.getVoxelID(y, x, z);
                     if (voxelID != air) {
                         getVisibility(toMesh, y, x, z, visibleFaces);
@@ -172,6 +174,8 @@ public class MarchMesher implements Mesher {
                 }
             }
         }
+        Coord3Int pos = toMesh.getWorldPosition();
+        chunkBatch.setPosition(pos.x * chunkSize, pos.y * chunkSize, pos.z * chunkSize);
         return chunkBatch;
     }
 
