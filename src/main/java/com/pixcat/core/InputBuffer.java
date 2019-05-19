@@ -51,6 +51,7 @@ public class InputBuffer {
                 button = MouseAction.Button.LEFT;
             else if (mousekey == GLFW_MOUSE_BUTTON_RIGHT)
                 button = MouseAction.Button.RIGHT;
+
             MouseAction.Event event = MouseAction.Event.NONE;
             if (action == GLFW_PRESS)
                 event = MouseAction.Event.PRESS;

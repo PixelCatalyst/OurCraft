@@ -18,7 +18,7 @@ public class FileManager {
     private String rootDir;
 
     private FileManager() {
-        rootDir = "resources\\";
+        rootDir = "resources/";
     }
 
     public static FileManager getInstance() {
@@ -53,14 +53,14 @@ public class FileManager {
         int height;
         ByteBuffer buffer;
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            String filePath = System.getProperty("user.dir") + "\\" + rootDir + fileName;
+            String filePath = System.getProperty("user.dir") + "/" + rootDir + fileName;
             IntBuffer widthBuffer = stack.mallocInt(1);
             IntBuffer heightBuffer = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
             final int channelCount = 4;
             buffer = stbi_load(filePath, widthBuffer, heightBuffer, channels, channelCount);
             if (buffer == null)
-                throw new IllegalStateException("Image file" + fileName + "not loaded: " + stbi_failure_reason());
+                throw new IllegalStateException("Image file " + fileName + " not loaded: " + stbi_failure_reason());
             width = widthBuffer.get();
             height = heightBuffer.get();
         }

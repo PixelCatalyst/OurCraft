@@ -73,11 +73,11 @@ public class Camera {
     }
 
     public Matrix4f getViewMatrix() {
-        viewMatrix.identity();
-
-        viewMatrix.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
-                .rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
-        viewMatrix.translate(-position.x, -position.y, -position.z);
+        viewMatrix
+            .identity()
+            .rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
+            .rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0))
+            .translate(-position.x, -position.y, -position.z);
 
         return viewMatrix;
     }

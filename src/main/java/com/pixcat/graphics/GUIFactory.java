@@ -1,6 +1,5 @@
 package com.pixcat.graphics;
 
-import com.pixcat.core.FileManager;
 import com.pixcat.mesh.Mesh;
 
 public class GUIFactory {
@@ -29,7 +28,7 @@ public class GUIFactory {
 
     public static GUIFactory getInstance() {
         if (instance == null) {
-            synchronized (FileManager.class) {
+            synchronized (GUIFactory.class) {
                 if (instance == null)
                     instance = new GUIFactory();
             }

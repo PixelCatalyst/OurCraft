@@ -4,6 +4,7 @@ import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
 import com.pixcat.state.GameState;
 import com.pixcat.state.MenuGameState;
+import com.pixcat.state.TestGameState;
 import org.lwjgl.glfw.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -31,6 +32,7 @@ public class Game {
         world = new World("random seed");
         timer = new Timer();
         currentState = new MenuGameState(world);
+//        currentState = new TestGameState(world);
         currentState.onEnter();
     }
 
