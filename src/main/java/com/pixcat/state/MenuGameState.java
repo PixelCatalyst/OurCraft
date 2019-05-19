@@ -32,18 +32,13 @@ public class MenuGameState implements GameState {
 
     @Override
     public void draw(Renderer renderer) {
-        renderer.setBackgroundColor(0.31f, 0.55f, 0.82f);
-        renderer.setOrthographic();
-
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
-        StaticImage bg = gui.makeImage(windowWidth, windowHeight, backgroundTex);
+        StaticImage bg = gui.makeImage(backgroundTex, windowWidth, windowHeight);
         renderer.draw(bg);
 
         int btnWidth = 512;
         int btnHeight = 48;
-        playButton = gui.makeButton(btnWidth, btnHeight, startBtnTex);
-        exitButton = gui.makeButton(btnWidth, btnHeight, exitBtnTex);
         playButton.setPosition(windowWidth/2 - btnWidth/2, windowHeight/2 - btnHeight/2 - btnHeight);
         exitButton.setPosition(windowWidth/2 - btnWidth/2, windowHeight/2 - btnHeight/2 + btnHeight);
         renderer.draw(playButton);
@@ -67,7 +62,11 @@ public class MenuGameState implements GameState {
         return this;
     }
 
-    public void onEnter() {
+    public void onEnter(Renderer renderer) {
+        renderer.setBackgroundColor(0.31f, 0.55f, 0.82f);
+        renderer.setOrthographic();
 
+        playButton = gui.makeButton(startBtnTex, null, null);
+        exitButton = gui.makeButton(exitBtnTex, null, null);
     }
 }
