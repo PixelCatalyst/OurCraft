@@ -1,5 +1,10 @@
 package com.pixcat.mesh;
 
+import com.pixcat.graphics.GraphicBatch;
+import com.pixcat.graphics.Texture;
+import com.pixcat.voxel.Chunk;
+
 public interface Mesher {
-    //TODO
+
+    GraphicBatch processChunk(Chunk toMesh, Texture[] materials);
 }

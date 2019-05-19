@@ -1,7 +1,11 @@
 package com.pixcat.gameplay;
 
+import com.pixcat.voxel.Chunk;
+import com.pixcat.voxel.SpatialStructure;
 import org.joml.Vector3f;
 import org.joml.Matrix4f;
+
+import java.util.ArrayList;
 
 public class Camera {
     private float fieldOfView;
@@ -12,6 +16,8 @@ public class Camera {
     private Vector3f rotation;
     private Matrix4f viewMatrix;
 
+    private ArrayList<Chunk> visibleChunks;
+
     public Camera() {
         fieldOfView = (float) Math.toRadians(60.0);
         nearClippingDist = 0.01f;
@@ -20,6 +26,7 @@ public class Camera {
         position = new Vector3f(0.0f, 0.0f, 0.0f);
         rotation = new Vector3f(0.0f, 0.0f, 0.0f);
         viewMatrix = new Matrix4f();
+        visibleChunks = new ArrayList<>();
     }
 
     public float getFieldOfView() {
@@ -70,6 +77,13 @@ public class Camera {
         rotation.x += offsetX;
         rotation.y += offsetY;
         rotation.z += offsetZ;
+    }
+
+    public ArrayList<Chunk> getVisibleChunks(SpatialStructure voxels) {
+        visibleChunks.clear();
+        //TODO
+        visibleChunks.add(voxels.getChunk(0,0,0));
+        return visibleChunks;
     }
 
     public Matrix4f getViewMatrix() {
