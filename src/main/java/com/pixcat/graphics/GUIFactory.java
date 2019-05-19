@@ -2,8 +2,6 @@ package com.pixcat.graphics;
 
 import com.pixcat.mesh.Mesh;
 
-import java.util.Optional;
-
 public class GUIFactory {
     private static GUIFactory instance = null;
 
