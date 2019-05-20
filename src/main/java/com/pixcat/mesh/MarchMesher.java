@@ -176,6 +176,7 @@ public class MarchMesher implements Mesher {
         }
         Coord3Int pos = toMesh.getWorldPosition();
         chunkBatch.setPosition(pos.x * chunkSize, pos.y * chunkSize, pos.z * chunkSize);
+        chunkBatch.bakeTextures();
         return chunkBatch;
     }
 

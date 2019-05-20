@@ -8,12 +8,15 @@ import java.util.ArrayList;
 
 public class GraphicBatch {
     private ArrayList<GraphicObject> objects;
+    private ArrayList<Integer> textureChanges;
+    private int changeIndex;
     private int iterator;
     private Vector3f position;
     private Matrix4f worldMatrix;
 
     public GraphicBatch() {
         objects = new ArrayList<>();
+        textureChanges = new ArrayList<>();
         iterator = Integer.MAX_VALUE;
         position = new Vector3f(0.0f, 0.0f, 0.0f);
         worldMatrix = new Matrix4f();
@@ -23,8 +26,27 @@ public class GraphicBatch {
         objects.add(g);
     }
 
+    public void bakeTextures() {
+        if (objects.size() > 0) {
+            objects.sort(GraphicObject::compareTextures);
+            textureChanges.clear();
+            Texture currTex = objects.get(0).getTexture();
+            textureChanges.add(0);
+            for (int i = 1; i < objects.size(); ++i) {
+                Texture otherTex = objects.get(i).getTexture();
+                if (currTex.equals(otherTex) == false) {
+                    textureChanges.add(i);
+                    currTex = otherTex;
+                }
+            }
+        }
+    }
+
     public void beginIteration() {
         iterator = 0;
+        changeIndex = 0;
+        if (textureChanges.size() == 0)
+            bakeTextures();
     }
 
     public boolean hasNext() {
@@ -39,8 +61,13 @@ public class GraphicBatch {
         return objects.get(iterator).getMesh();
     }
 
-    public Texture getTexture() {
-        return objects.get(iterator).getTexture();
+    public void bindTexture() {
+        if (changeIndex < textureChanges.size()) {
+            if (iterator == textureChanges.get(changeIndex)) {
+                ++changeIndex;
+                objects.get(iterator).getTexture().bind();
+            }
+        }
     }
 
     public Vector3f getPosition() {

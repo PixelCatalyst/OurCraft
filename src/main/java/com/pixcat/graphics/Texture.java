@@ -14,6 +14,20 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, ID);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Texture that = (Texture) o;
+        return this.ID == that.ID;
+    }
+
+    public int compareID(Texture other) {
+        return this.ID - other.ID;
+    }
+
     public void cleanup() {
         glDeleteTextures(ID);
         ID = 0;

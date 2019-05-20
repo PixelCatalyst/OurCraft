@@ -111,8 +111,7 @@ public class Renderer {
     public void draw(GraphicBatch batch) {
         batch.beginIteration();
         while (batch.hasNext()) {
-            Texture tex = batch.getTexture();
-            tex.bind();
+            batch.bindTexture();
             Mesh mesh = batch.getMesh();
             Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, batch.getWorldMatrix());
             shaderProgram.setUniform("wvpMatrix", wvpMatrix);
@@ -126,9 +125,6 @@ public class Renderer {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glDrawElements(GL_TRIANGLES, m.getVertexCount(), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glBindVertexArray(0);
     }
 
     public void endFrame() {

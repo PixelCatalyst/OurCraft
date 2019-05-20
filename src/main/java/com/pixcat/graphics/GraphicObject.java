@@ -30,6 +30,10 @@ public class GraphicObject {
         this.texture = texture;
     }
 
+    public int compareTextures(GraphicObject other) {
+        return this.texture.compareID(other.texture);
+    }
+
     public Vector3f getPosition() {
         return new Vector3f(position);
     }
