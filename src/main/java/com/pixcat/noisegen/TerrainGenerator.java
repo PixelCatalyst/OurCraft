@@ -1,11 +1,23 @@
 package com.pixcat.noisegen;
 
+import com.pixcat.voxel.ArrayChunk;
+import com.pixcat.voxel.Chunk;
+
 public class TerrainGenerator {
     private Noise primaryNoise;
     private Noise secondaryNoise;
 
-    public TerrainGenerator(int seed) {
+    private final int chunkSize;
+    private final int heightInChunks;
+    private final int heightInBlocks;
+    private double lastElevation;
+
+    public TerrainGenerator(int seed, int chunkSize, int heightInChunks) {
         setSeed(seed);
+        this.chunkSize = chunkSize;
+        this.heightInChunks = heightInChunks;
+        this.heightInBlocks = heightInChunks * chunkSize;
+        lastElevation = 0.0;
     }
 
     public void setSeed(int seed) {
@@ -13,25 +25,59 @@ public class TerrainGenerator {
         secondaryNoise = new SimplexNoise((seed * 2) + (seed / 1000) + 11);
     }
 
-    public int getBlockColorAt(int x, int y) {
-        double elevation = baseTerrain(x, y);
+    public int fillColumn(Chunk[] column, int x, int z) {
+        int heightAtFirstBlock = 0;
+        for (int i = 0; i < heightInChunks; ++i)
+            column[i] = new ArrayChunk();
+
+        for (int cx = x; cx < (x + chunkSize); ++cx) {
+            for (int cz = z; cz < (z + chunkSize); ++cz) {
+                int groundHeight = getHeightAt(cx, cz);
+                int waterHeight = 0;
+                if (groundHeight < 53)
+                    waterHeight = 53 - groundHeight;
+                if ((cx - x) == 1 && (cz - z) == 1)
+                    heightAtFirstBlock = groundHeight + waterHeight + 1;
+
+                int grassHeight = (waterHeight > 0 ? 0 : 1);
+                int dirtHeight = 4;
+                for (int y = (groundHeight + waterHeight); y >= 0; --y) {
+                    int chunkIndex = y / chunkSize;
+                    int voxelIndex = y - (chunkIndex * chunkSize);
+                    byte ID = 3;
+                    if (waterHeight-- > 0)
+                        ID = 4;
+                    else if (grassHeight-- > 0)
+                        ID = 2;
+                    else if (dirtHeight-- > 0)
+                        ID = 1;
+                    column[chunkIndex].setVoxelID(voxelIndex, cx - x, cz - z, ID);
+                }
+            }
+        }
+        return heightAtFirstBlock;
+    }
+
+    private int getHeightAt(int x, int z) {
+        double elevation = baseTerrain(x, z);
         double bumpiness = 0.40625 - elevation;
-        double grass = grasslandPattern(x, y);
+        double grass = grasslandPattern(x, z);
         elevation += bumpiness * grass;
-        elevation -= oceanPattern(x, y);
+        elevation -= oceanPattern(x, z);
         if (elevation > 0.40625)
-            elevation -= (1.0 - elevation / 10.0) * riverPattern(x, y, grass);
+            elevation -= (1.0 - elevation / 10.0) * riverPattern(x, z, grass);
         else
-            elevation -= (elevation * 1.8) * riverPattern(x, y, 0.0);
+            elevation -= (elevation * 1.8) * riverPattern(x, z, 0.0);
 
         if (elevation <= 0.0)
             elevation = 0.0078125;
-        elevation = Math.round(elevation * 128.0) / 128.0;
+        elevation = Math.round(elevation * (double) heightInBlocks) / (double) heightInBlocks;
+        lastElevation = elevation;
+        return (int) (elevation * (heightInBlocks - 1));
+    }
 
-        double tree = treePattern(x, y, elevation);
-        if (tree >= 1.0)
-            return rgb(110, 80, 60);
-        return rgb(elevation);
+    public boolean isTreeAt(int x, int z) {
+        return (treePattern(x, z, lastElevation) >= 1.0);
     }
 
     private double baseTerrain(int x, int y) {
@@ -44,14 +90,16 @@ public class TerrainGenerator {
                 0.125 * primaryNoise.getValue(8 * nx, 8 * ny) +
                 0.0625 * primaryNoise.getValue(16 * nx, 16 * ny);
         elevation /= (1.0 + 0.6 + 0.25 + 0.125 + 0.0625);
-        elevation = Math.pow(elevation, 0.65);
+        elevation = Math.pow(elevation, 0.8);
         elevation = terrainLowerSmooth(elevation);
         return elevation;
     }
 
     private double terrainLowerSmooth(double elevation) {
         if (elevation > 0.421875 && elevation <= 0.62)
-            elevation = Math.round(elevation * 21) / 21.0;
+            elevation = Math.pow(elevation, 1.02);
+        else if (elevation > 0.55)
+            elevation = Math.pow(elevation, 1.12);
         return elevation;
     }
 
@@ -61,7 +109,7 @@ public class TerrainGenerator {
         double ny = delta * y;
         double area = secondaryNoise.getValue(nx, ny) +
                 0.11 * secondaryNoise.getValue(4 * nx, 4 * ny);
-        area = Math.pow(Math.sin(area), 4.0);
+        area = Math.pow(Math.sin(area), 4.2);
         return (area > 0.01 ? Math.min(1.25 * area, 1.0) : 0.0);
     }
 
@@ -89,7 +137,7 @@ public class TerrainGenerator {
         double nx = delta * x;
         double ny = delta * y;
         double riverbed = ridgedNoise(nx, ny);
-        riverbed = riverSmooth(Math.pow(riverbed, 5.5)) - (grass * grass * 0.28);
+        riverbed = riverSmooth(Math.pow(riverbed, 4.5)) - (grass * grass * 0.32);
         if (riverbed < 0.0)
             riverbed = 0.0;
         return riverbed;
@@ -148,23 +196,4 @@ public class TerrainGenerator {
         else
             return 0.0001;
     }
-
-    //Helper functions -- TODO temporary
-    private int rgb(double normalizedGrey) {
-        int grey = (int) (255 * normalizedGrey);
-
-        if (normalizedGrey <= 0.40625) //sea level
-            return rgb(0, 0, grey + 110);
-        return rgb(0, grey, 0);
-    }
-
-    private int rgb(int red, int green, int blue) {
-        red &= 0xFF;
-        green &= 0xFF;
-        blue &= 0xFF;
-        int val = 0xFF000000;
-        val |= ((red << 16) | (green << 8) | blue);
-        return val;
-    }
-    //Helper functions end
 }

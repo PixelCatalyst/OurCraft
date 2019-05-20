@@ -18,12 +18,12 @@ public class Camera {
 
     private ArrayList<Chunk> visibleChunks;
 
-    public Camera() {
+    public Camera(float x, float y, float z) {
         fieldOfView = (float) Math.toRadians(60.0);
         nearClippingDist = 0.01f;
         farClippingDist = 1000.0f;
 
-        position = new Vector3f(0.0f, 0.0f, 0.0f);
+        position = new Vector3f(x, y, z);
         rotation = new Vector3f(0.0f, 0.0f, 0.0f);
         viewMatrix = new Matrix4f();
         visibleChunks = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Camera {
     }
 
     public Vector3f getPosition() {
-        return position;
+        return new Vector3f(position);
     }
 
     public void setPosition(float x, float y, float z) {
@@ -64,7 +64,7 @@ public class Camera {
     }
 
     public Vector3f getRotation() {
-        return rotation;
+        return new Vector3f(rotation);
     }
 
     public void setRotation(float x, float y, float z) {
@@ -77,12 +77,31 @@ public class Camera {
         rotation.x += offsetX;
         rotation.y += offsetY;
         rotation.z += offsetZ;
+
+        if (rotation.x > 85.0f)
+            rotation.x = 85.0f;
+        else if (rotation.x < -85.0f)
+            rotation.x = -85.0f;
     }
 
     public ArrayList<Chunk> getVisibleChunks(SpatialStructure voxels) {
         visibleChunks.clear();
-        //TODO
-        visibleChunks.add(voxels.getChunk(0,0,0));
+        //TODO Frustum Culling
+        int diameter = voxels.getDiameter();
+        int planeMin = -(diameter / 2);
+        int planeMax = (diameter / 2);
+        if ((diameter % 2) == 0)
+            --planeMax;
+
+        for (int x = planeMin; x <= planeMax; ++x) {
+            for (int z = planeMin; z <= planeMax; ++z) {
+                for (int y = 0; y < 8; ++y) {
+                    Chunk chunk = voxels.getChunk(y, x, z);
+                    if (chunk != null)
+                        visibleChunks.add(chunk);
+                }
+            }
+        }
         return visibleChunks;
     }
 
