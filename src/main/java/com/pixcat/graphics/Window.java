@@ -50,7 +50,7 @@ public class Window {
 
     public void bindAsCurrent() {
         glfwMakeContextCurrent(handle);
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
         GL.createCapabilities();
     }
 
