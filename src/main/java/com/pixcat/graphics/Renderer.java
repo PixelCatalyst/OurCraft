@@ -39,7 +39,11 @@ public class Renderer {
         shaderProgram.link();
         shaderProgram.createUniform("wvpMatrix");
         shaderProgram.createUniform("textureSampler");
+        shaderProgram.setUniform("textureSampler", 0);
         transform = new Transformation();
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
     }
 
     public long getWindowHandle() {
@@ -78,7 +82,6 @@ public class Renderer {
             glViewport(0, 0, viewportWidth, viewportHeight);
         }
         shaderProgram.bind();
-        shaderProgram.setUniform("textureSampler", 0);
     }
 
     public void setBackgroundColor(float red, float green, float blue) {
