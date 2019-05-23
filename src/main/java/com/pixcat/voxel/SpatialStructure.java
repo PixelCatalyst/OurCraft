@@ -15,4 +15,6 @@ public interface SpatialStructure {
     void putChunk(int y, int x, int z, Chunk toPut);
 
     int getDiameter();
+
+    int getHeight();
 }

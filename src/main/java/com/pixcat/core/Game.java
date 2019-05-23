@@ -28,7 +28,7 @@ public class Game {
         renderer.centerWindow();
         renderer.initAssets();
         input = new InputBuffer(renderer.getWindowHandle());
-        world = new World("random seed");
+        world = new World();
         timer = new Timer();
         currentState = new MenuGameState(world);
         currentState.onEnter();

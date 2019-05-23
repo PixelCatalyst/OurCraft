@@ -2,6 +2,7 @@ package com.pixcat.gameplay;
 
 import com.pixcat.core.FileManager;
 import com.pixcat.graphics.Texture;
+import com.pixcat.mesh.GreedyMesher;
 import com.pixcat.noisegen.TerrainGenerator;
 import com.pixcat.voxel.*;
 import com.pixcat.mesh.Mesher;
@@ -21,15 +22,17 @@ public class World implements Subject {
     private Mesher mesher;
 
     private Vector2i playerChunkColumn;
+    private final int chunkSize = 16;
 
     private ArrayList<Observer> observers;
 
     public World() {
         playerCamera = new Camera(0, 0, 0);
         playerMetrics = new Metrics();
-        voxels = new VirtualArray(4);
+        voxels = new VirtualArray(8);
         setupBlocks();
-        mesher = new MarchMesher();
+        //mesher = new MarchMesher();
+        mesher = new GreedyMesher(chunkSize);
         observers = new ArrayList<>();
     }
 
@@ -71,8 +74,8 @@ public class World implements Subject {
     }
 
     public void beginGeneration(String seed) {
-        final int heightInChunks = 8;
-        terrainGen = new TerrainGenerator(2123, 16, heightInChunks);
+        final int heightInChunks = voxels.getHeight();
+        terrainGen = new TerrainGenerator(2123, chunkSize, heightInChunks);
         int diameter = voxels.getDiameter();
         int planeMin = -(diameter / 2);
         int planeMax = (diameter / 2);
@@ -87,15 +90,24 @@ public class World implements Subject {
                 //test-location: seed2123; -2020, -2740
                 //test-location: seed2123; 24, -2332
                 //TODO
-                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * 16) + 24, (z * 16) + -2332);
+                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * chunkSize) + 24, (z * chunkSize) + -2332);
                 if ((x == 0) && (z == 0))
-                    playerCamera.setPosition(1.5f, (float) heightAtFirstBlock + 1.7f, 1.5f);
+                    initPlayerPosition(heightAtFirstBlock);
                 for (int y = 0; y < heightInChunks; ++y) {
                     if (currColumn[y] != null)
                         voxels.putChunk(y, x, z, currColumn[y]);
                 }
             }
         }
+    }
+
+
+    private void initPlayerPosition(int height) {
+        Vector3f playerPos = new Vector3f(1.5f, (float) height + 1.7f, 1.5f);
+        playerCamera.setPosition(playerPos.x, playerPos.y, playerPos.z);
+        playerChunkColumn = new Vector2i(
+                (int) Math.ceil(playerPos.x) / chunkSize,
+                (int) Math.ceil(playerPos.z) / chunkSize);
     }
 
     public void updateChunks() {
@@ -140,9 +152,13 @@ public class World implements Subject {
 
         Iterator<Chunk> iterator = chunks.iterator();
         for (int i = 0; i < chunks.size(); ++i) {
-            Chunk ch = iterator.next();
-            ch.build(mesher, materials);
-            renderer.draw(ch.getGraphic());
+            Chunk chunk = iterator.next();
+            if (chunk.needRebuild()) {
+                Coord3Int position = chunk.getWorldPosition();
+                NeumannNeighborhood chunkWithNeighbors = new NeumannNeighborhood(voxels, position);
+                chunk.applyBuild(mesher, chunkWithNeighbors, materials);
+            }
+            renderer.draw(chunk.getGraphic());
         }
     }
 

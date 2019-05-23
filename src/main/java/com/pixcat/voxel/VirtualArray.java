@@ -6,11 +6,13 @@ public class VirtualArray implements SpatialStructure {
     private Set<Block> voxelTypes;
     private Map<Coord3Int, Chunk> chunks;
     private final int diameter;
+    private final int height;
 
     public VirtualArray(int diameter) {
         voxelTypes = new LinkedHashSet<>();
         chunks = new HashMap<>();
         this.diameter = diameter;
+        this.height = 8;
     }
 
     @Override
@@ -58,5 +60,9 @@ public class VirtualArray implements SpatialStructure {
     @Override
     public int getDiameter() {
         return diameter;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

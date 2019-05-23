@@ -42,9 +42,14 @@ public class ArrayChunk implements Chunk {
     }
 
     @Override
-    public void build(Mesher mesher, Texture[] materials) {
+    public boolean needRebuild() {
+        return dirtyFlag;
+    }
+
+    @Override
+    public void applyBuild(Mesher mesher, NeumannNeighborhood neighbors, Texture[] materials) {
         if (dirtyFlag) {
-            graphicBatch = mesher.processChunk(this, materials);
+            graphicBatch = mesher.processChunk(neighbors, materials);
             dirtyFlag = false;
         }
     }

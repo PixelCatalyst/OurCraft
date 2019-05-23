@@ -1,11 +1,11 @@
 package com.pixcat.mesh;
 
-import com.pixcat.core.FileManager;
 import com.pixcat.graphics.GraphicBatch;
 import com.pixcat.graphics.GraphicObject;
 import com.pixcat.graphics.Texture;
 import com.pixcat.voxel.Chunk;
 import com.pixcat.voxel.Coord3Int;
+import com.pixcat.voxel.NeumannNeighborhood;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -151,8 +151,9 @@ public class MarchMesher implements Mesher {
     }
 
     @Override
-    public GraphicBatch processChunk(Chunk toMesh, Texture[] materials) {
+    public GraphicBatch processChunk(NeumannNeighborhood chunkWithNeighbors, Texture[] materials) {
         GraphicBatch chunkBatch = new GraphicBatch();
+        Chunk toMesh = chunkWithNeighbors.central;
         VisibleFaces visibleFaces = new VisibleFaces();
         final byte air = (byte) 0;
         final int chunkSize = toMesh.getSize();

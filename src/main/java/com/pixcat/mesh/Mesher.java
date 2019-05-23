@@ -2,9 +2,9 @@ package com.pixcat.mesh;
 
 import com.pixcat.graphics.GraphicBatch;
 import com.pixcat.graphics.Texture;
-import com.pixcat.voxel.Chunk;
+import com.pixcat.voxel.NeumannNeighborhood;
 
 public interface Mesher {
 
-    GraphicBatch processChunk(Chunk toMesh, Texture[] materials);
+    GraphicBatch processChunk(NeumannNeighborhood chunkWithNeighbors, Texture[] materials);
 }
