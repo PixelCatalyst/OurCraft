@@ -2,6 +2,7 @@ package com.pixcat.noisegen;
 
 import com.pixcat.voxel.ArrayChunk;
 import com.pixcat.voxel.Chunk;
+import org.joml.Vector3i;
 
 public class TerrainGenerator {
     private Noise primaryNoise;
@@ -12,12 +13,35 @@ public class TerrainGenerator {
     private final int heightInBlocks;
     private double lastElevation;
 
+    private final int treeTrunkHeight;
+    private final Vector3i[] treeModel;
+
     public TerrainGenerator(int seed, int chunkSize, int heightInChunks) {
         setSeed(seed);
         this.chunkSize = chunkSize;
         this.heightInChunks = heightInChunks;
         this.heightInBlocks = heightInChunks * chunkSize;
         lastElevation = 0.0;
+        treeTrunkHeight = 3;
+        treeModel = new Vector3i[]{
+                new Vector3i(0, 1, 0),
+                new Vector3i(0, 1, 0),
+                new Vector3i(0, 1, 0),
+                new Vector3i(-1, 1, -1),
+                new Vector3i(1, 0, 0),
+                new Vector3i(1, 0, 0),
+                new Vector3i(0, 0, 1),
+                new Vector3i(-1, 0, 0),
+                new Vector3i(-1, 0, 0),
+                new Vector3i(0, 0, 1),
+                new Vector3i(1, 0, 0),
+                new Vector3i(1, 0, 0),
+                new Vector3i(-1, 1, 0),
+                new Vector3i(-1, 0, -1),
+                new Vector3i(1, 0, -1),
+                new Vector3i(0, 0, 1),
+                new Vector3i(1, 0, 0)
+        };
     }
 
     public void setSeed(int seed) {
@@ -32,11 +56,13 @@ public class TerrainGenerator {
 
         for (int cx = x; cx < (x + chunkSize); ++cx) {
             for (int cz = z; cz < (z + chunkSize); ++cz) {
+                int xRelative = cx - x;
+                int zRelative = cz - z;
                 int groundHeight = getHeightAt(cx, cz);
                 int waterHeight = 0;
                 if (groundHeight < 53)
                     waterHeight = 53 - groundHeight;
-                if ((cx - x) == 1 && (cz - z) == 1)
+                if (xRelative == 1 && zRelative == 1)
                     heightAtFirstBlock = groundHeight + waterHeight + 1;
 
                 int grassHeight = (waterHeight > 0 ? 0 : 1);
@@ -51,8 +77,15 @@ public class TerrainGenerator {
                         ID = 2;
                     else if (dirtHeight-- > 0)
                         ID = 1;
-                    column[chunkIndex].setVoxelID(voxelIndex, cx - x, cz - z, ID);
+                    column[chunkIndex].setVoxelID(voxelIndex, xRelative, zRelative, ID);
                 }
+
+                int maxIndex = chunkSize - 1;
+                boolean isTree = false;
+                if ((xRelative > 0) && (xRelative < maxIndex) && (zRelative > 0) && (zRelative < maxIndex))
+                    isTree = isTreeAt(cx, cz);
+                if (isTree)
+                    createTree(column, groundHeight, xRelative, zRelative);
             }
         }
         return heightAtFirstBlock;
@@ -76,7 +109,7 @@ public class TerrainGenerator {
         return (int) (elevation * (heightInBlocks - 1));
     }
 
-    public boolean isTreeAt(int x, int z) {
+    private boolean isTreeAt(int x, int z) {
         return (treePattern(x, z, lastElevation) >= 1.0);
     }
 
@@ -180,8 +213,8 @@ public class TerrainGenerator {
     }
 
     private double forestThreshold(double elevation, double forestation) {
-        if (elevation <= 0.40626 || elevation >= 0.9)
-            return 1.0;
+        if (elevation <= 0.4140625 || elevation >= 0.9)
+            return 10.0;
         else if (forestation > 0.1)
             forestation = Math.round(forestation * 3) / 3.0;
         else
@@ -195,5 +228,25 @@ public class TerrainGenerator {
             return 0.005;
         else
             return 0.0001;
+    }
+
+    private void createTree(Chunk[] column, int groundHeight, int xRelative, int zRelative) {
+        int chunkIndex = groundHeight / chunkSize;
+        int yRelative = groundHeight - (chunkIndex * chunkSize);
+        byte currentVoxelID = (byte) 5;
+        int height = 0;
+        for (Vector3i nextBlock : treeModel) {
+            yRelative += nextBlock.y;
+            if (yRelative >= chunkSize) {
+                chunkIndex += yRelative / chunkSize;
+                yRelative %= chunkSize;
+            }
+            xRelative += nextBlock.x;
+            zRelative += nextBlock.z;
+            column[chunkIndex].setVoxelID(yRelative, xRelative, zRelative, currentVoxelID);
+            height += nextBlock.y;
+            if (height == treeTrunkHeight)
+                currentVoxelID = (byte) 6;
+        }
     }
 }
