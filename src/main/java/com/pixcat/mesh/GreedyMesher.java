@@ -146,7 +146,7 @@ public class GreedyMesher implements Mesher {
                                     dv[v] = height;
 
                                     assembleVertices(x, du, dv);
-                                    assembleTexCoords((float) width, (float) height);
+                                    assembleTexCoords((float) width, (float) height, side);
                                     GraphicObject obj = createQuad(mask[n], backFace, materials);
                                     batch.addObject(obj);
                                 }
@@ -272,11 +272,21 @@ public class GreedyMesher implements Mesher {
         workingVertices[11] = x[2] + dv[2];
     }
 
-    private void assembleTexCoords(float width, float height) {
-        workingTexCoords[1] = width;
-        workingTexCoords[4] = height;
-        workingTexCoords[6] = height;
-        workingTexCoords[7] = width;
+    private void assembleTexCoords(float width, float height, int side) {
+        for (int i = 0; i < workingTexCoords.length; ++i)
+            workingTexCoords[i] = 0.0f;
+
+        if ((side == VoxelFace.NORTH) || (side == VoxelFace.SOUTH)) {
+            workingTexCoords[2] = width;
+            workingTexCoords[4] = width;
+            workingTexCoords[5] = height;
+            workingTexCoords[7] = height;
+        } else {
+            workingTexCoords[1] = width;
+            workingTexCoords[4] = height;
+            workingTexCoords[6] = height;
+            workingTexCoords[7] = width;
+        }
     }
 
     private GraphicObject createQuad(final VoxelFace voxel, boolean backFace, Texture[] materials) {
