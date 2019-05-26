@@ -1,6 +1,10 @@
 package com.pixcat.voxel;
 
+import java.util.ArrayList;
+
 public interface SpatialStructure {
+
+    public void getAll(ArrayList<Chunk> vis);
 
     void addVoxelType(Block block);
 

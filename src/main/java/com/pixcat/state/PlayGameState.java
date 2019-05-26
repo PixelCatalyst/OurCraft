@@ -59,25 +59,31 @@ public class PlayGameState implements GameState {
             double deltaX = lastMouse.x - currMouse.x;
             double deltaY = lastMouse.y - currMouse.y;
             lastMouse = currMouse;
+            final double norm = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            final double turnSpeed = 240.0f;
+            if (norm > 0.0) {
+                deltaX = (deltaX / norm) * turnSpeed * Math.min(lastT, 0.05);
+                deltaY = (deltaY / norm) * turnSpeed * Math.min(lastT, 0.05);
+            }
             testCam.moveRotation((float) -deltaY, (float) -deltaX, 0);
         }
 
         //TODO temporary
-        float speed = 4.5f;
+        final float moveSpeed = 4.5f;
         if (input.isKeyboardKeyDown(GLFW_KEY_W))
-            testCam.movePosition(0, 0, -speed * lastT);
+            testCam.movePosition(0, 0, -moveSpeed * lastT);
         if (input.isKeyboardKeyDown(GLFW_KEY_S))
-            testCam.movePosition(0, 0, speed * lastT);
+            testCam.movePosition(0, 0, moveSpeed * lastT);
 
         if (input.isKeyboardKeyDown(GLFW_KEY_A))
-            testCam.movePosition(-speed * lastT, 0, 0);
+            testCam.movePosition(-moveSpeed * lastT, 0, 0);
         if (input.isKeyboardKeyDown(GLFW_KEY_D))
-            testCam.movePosition(speed * lastT, 0, 0);
+            testCam.movePosition(moveSpeed * lastT, 0, 0);
 
         if (input.isKeyboardKeyDown(GLFW_KEY_R))
-            testCam.movePosition(0, speed * lastT, 0);
+            testCam.movePosition(0, moveSpeed * lastT, 0);
         if (input.isKeyboardKeyDown(GLFW_KEY_F))
-            testCam.movePosition(0, -speed * lastT, 0);
+            testCam.movePosition(0, -moveSpeed * lastT, 0);
         exitingInput = input;
 
         return this;
@@ -86,6 +92,7 @@ public class PlayGameState implements GameState {
     @Override
     public void update(double elapsedTime) {
         world.addGameTime(elapsedTime);
+        world.updateChunks();
         lastT = (float) elapsedTime;
     }
 

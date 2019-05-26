@@ -2,6 +2,7 @@ package com.pixcat.gameplay;
 
 import com.pixcat.voxel.Chunk;
 import com.pixcat.voxel.SpatialStructure;
+import com.pixcat.voxel.VirtualArray;
 import org.joml.Vector3f;
 import org.joml.Matrix4f;
 
@@ -87,21 +88,8 @@ public class Camera {
     public ArrayList<Chunk> getVisibleChunks(SpatialStructure voxels) {
         visibleChunks.clear();
         //TODO Frustum Culling
-        int diameter = voxels.getDiameter();
-        int planeMin = -(diameter / 2);
-        int planeMax = (diameter / 2);
-        if ((diameter % 2) == 0)
-            --planeMax;
 
-        for (int x = planeMin; x <= planeMax; ++x) {
-            for (int z = planeMin; z <= planeMax; ++z) {
-                for (int y = 0; y < 8; ++y) {
-                    Chunk chunk = voxels.getChunk(y, x, z);
-                    if (chunk != null)
-                        visibleChunks.add(chunk);
-                }
-            }
-        }
+        voxels.getAll(visibleChunks);
         return visibleChunks;
     }
 

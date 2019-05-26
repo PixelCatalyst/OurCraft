@@ -10,6 +10,7 @@ import com.pixcat.mesh.MarchMesher;
 import com.pixcat.graphics.Renderer;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
+import org.joml.Vector4i;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ public class World implements Subject {
     private Mesher mesher;
 
     private Vector2i playerChunkColumn;
+    private Vector4i chunkArea;
     private final int chunkSize = 16;
 
     private ArrayList<Observer> observers;
@@ -29,7 +31,7 @@ public class World implements Subject {
     public World() {
         playerCamera = new Camera(0, 0, 0);
         playerMetrics = new Metrics();
-        voxels = new VirtualArray(8);
+        voxels = new VirtualArray(5);
         setupBlocks();
         //mesher = new MarchMesher();
         mesher = new GreedyMesher(chunkSize);
@@ -87,20 +89,15 @@ public class World implements Subject {
             currColumn[i] = null;
         for (int x = planeMin; x <= planeMax; ++x) {
             for (int z = planeMin; z <= planeMax; ++z) {
-                //test-location: seed2123; -2020, -2740
-                //test-location: seed2123; 24, -2332
-                //TODO
-                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * chunkSize) + 24, (z * chunkSize) + -2332);
+                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * chunkSize), (z * chunkSize));
                 if ((x == 0) && (z == 0))
                     initPlayerPosition(heightAtFirstBlock);
-                for (int y = 0; y < heightInChunks; ++y) {
-                    if (currColumn[y] != null)
-                        voxels.putChunk(y, x, z, currColumn[y]);
-                }
+                for (int y = 0; y < heightInChunks; ++y)
+                    voxels.putChunk(y, x, z, currColumn[y]);
             }
         }
+        chunkArea = new Vector4i(planeMin, planeMax, planeMin, planeMax);
     }
-
 
     private void initPlayerPosition(int height) {
         Vector3f playerPos = new Vector3f(1.5f, (float) height + 1.7f, 1.5f);
@@ -111,7 +108,63 @@ public class World implements Subject {
     }
 
     public void updateChunks() {
-        //TODO
+        Vector3f playerPos = playerCamera.getPosition();
+        double roundedX = (playerPos.x > 0.0 ? Math.ceil(playerPos.x) : Math.floor(playerPos.x) - (double) chunkSize);
+        double roundedZ = (playerPos.z > 0.0 ? Math.ceil(playerPos.z) : Math.floor(playerPos.z) - (double) chunkSize);
+        Vector2i chunkPos = new Vector2i((int) roundedX / chunkSize, (int) roundedZ / chunkSize);
+        Vector2i chunkDiff = new Vector2i(chunkPos).sub(playerChunkColumn);
+        playerChunkColumn = chunkPos;
+        Vector4i movedChunkArea = new Vector4i(
+                chunkArea.x + chunkDiff.x,
+                chunkArea.y + chunkDiff.x,
+                chunkArea.z + chunkDiff.y,
+                chunkArea.w + chunkDiff.y);
+
+        Chunk[] currColumn = new Chunk[voxels.getHeight()];
+        generateChunksOnX(chunkDiff, movedChunkArea, currColumn);
+        generateChunksOnZ(chunkDiff, movedChunkArea, currColumn);
+    }
+
+    private void generateChunksOnX(Vector2i chunkDiff, Vector4i movedChunkArea, Chunk[] currColumn) {
+        int x = 0;
+        int xMax = -1;
+        if (chunkDiff.x < 0) {
+            x = movedChunkArea.x;
+            xMax = chunkArea.x;
+        } else if (chunkDiff.x > 0) {
+            x = chunkArea.y + 1;
+            xMax = movedChunkArea.y + 1;
+        }
+        for (; x < xMax; ++x) {
+            for (int z = chunkArea.z; z <= chunkArea.w; ++z)
+                generateColumn(x, z, currColumn);
+        }
+        chunkArea.x = movedChunkArea.x;
+        chunkArea.y = movedChunkArea.y;
+    }
+
+    private void generateChunksOnZ(Vector2i chunkDiff, Vector4i movedChunkArea, Chunk[] currColumn) {
+        int z = 0;
+        int zMax = -1;
+        if (chunkDiff.y < 0) {
+            z = movedChunkArea.z;
+            zMax = chunkArea.z;
+        } else if (chunkDiff.y > 0) {
+            z = chunkArea.w + 1;
+            zMax = movedChunkArea.w + 1;
+        }
+        for (; z < zMax; ++z) {
+            for (int x = chunkArea.x; x <= chunkArea.y; ++x)
+                generateColumn(x, z, currColumn);
+        }
+        chunkArea.z = movedChunkArea.z;
+        chunkArea.w = movedChunkArea.w;
+    }
+
+    private void generateColumn(int x, int z, Chunk[] workingColumn) {
+        terrainGen.fillColumn(workingColumn, (x * chunkSize), (z * chunkSize));
+        for (int y = 0; y < voxels.getHeight(); ++y)
+            voxels.putChunk(y, x, z, workingColumn[y]);
     }
 
     public void addGameTime(double elapsedTime) {

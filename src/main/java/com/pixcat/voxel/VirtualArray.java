@@ -15,6 +15,13 @@ public class VirtualArray implements SpatialStructure {
         this.height = 8;
     }
 
+    public void getAll(ArrayList<Chunk> vis) {
+        long i = 0;
+        for (Map.Entry<Coord3Int, Chunk> pair : chunks.entrySet()) {
+            vis.add(pair.getValue());
+        }
+    }
+
     @Override
     public void addVoxelType(Block block) {
         if (block != null)
@@ -54,7 +61,30 @@ public class VirtualArray implements SpatialStructure {
         Coord3Int worldPos = new Coord3Int(y, x, z);
         toPut.setWorldPosition(worldPos);
         chunks.put(worldPos, toPut);
-        //TODO unloading excessive chunks
+        removeExcessNeighbor(x, z);
+    }
+
+    private void removeExcessNeighbor(int x, int z) {
+        removeExcessColumn(x - diameter, z);
+        removeExcessColumn(x + diameter, z);
+
+        removeExcessColumn(x - diameter, z - diameter);
+        removeExcessColumn(x - diameter, z + diameter);
+
+        removeExcessColumn(x + diameter, z - diameter);
+        removeExcessColumn(x + diameter, z + diameter);
+
+        removeExcessColumn(x, z - diameter);
+        removeExcessColumn(x, z + diameter);
+    }
+
+    private void removeExcessColumn(int x, int z) {
+        for (int y = 0; y < height; ++y) {
+            Chunk removed = chunks.remove(new Coord3Int(y, x, z));
+            if (removed != null) {
+                removed.cleanup();
+            }
+        }
     }
 
     @Override

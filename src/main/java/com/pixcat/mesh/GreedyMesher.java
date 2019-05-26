@@ -220,12 +220,12 @@ public class GreedyMesher implements Mesher {
     private void cullAxisX(NeumannNeighborhood chunkWithNeighbors, int y, int x, int z, boolean[] visible) {
         Chunk chunk = chunkWithNeighbors.central;
         if (x == 0) {
-            visible[VoxelFace.WEST] = (chunkWithNeighbors.west != null) &&
+            visible[VoxelFace.WEST] = (chunkWithNeighbors.west == null) ||
                     (chunkWithNeighbors.west.getVoxelID(y, maxAxis, z) == airID);
             visible[VoxelFace.EAST] = (chunk.getVoxelID(y, x + 1, z) == airID);
         } else if (x == maxAxis) {
             visible[VoxelFace.WEST] = (chunk.getVoxelID(y, x - 1, z) == airID);
-            visible[VoxelFace.EAST] = (chunkWithNeighbors.east != null) &&
+            visible[VoxelFace.EAST] = (chunkWithNeighbors.east == null) ||
                     (chunkWithNeighbors.east.getVoxelID(y, 0, z) == airID);
         } else {
             visible[VoxelFace.WEST] = (chunk.getVoxelID(y, x - 1, z) == airID);
@@ -236,12 +236,12 @@ public class GreedyMesher implements Mesher {
     private void cullAxisZ(NeumannNeighborhood chunkWithNeighbors, int y, int x, int z, boolean[] visible) {
         Chunk chunk = chunkWithNeighbors.central;
         if (z == 0) {
-            visible[VoxelFace.SOUTH] = (chunkWithNeighbors.south != null) &&
+            visible[VoxelFace.SOUTH] = (chunkWithNeighbors.south == null) ||
                     (chunkWithNeighbors.south.getVoxelID(y, x, maxAxis) == airID);
             visible[VoxelFace.NORTH] = (chunk.getVoxelID(y, x, z + 1) == airID);
         } else if (z == maxAxis) {
             visible[VoxelFace.SOUTH] = (chunk.getVoxelID(y, x, z - 1) == airID);
-            visible[VoxelFace.NORTH] = (chunkWithNeighbors.north != null) &&
+            visible[VoxelFace.NORTH] = (chunkWithNeighbors.north == null) ||
                     (chunkWithNeighbors.north.getVoxelID(y, x, 0) == airID);
         } else {
             visible[VoxelFace.SOUTH] = (chunk.getVoxelID(y, x, z - 1) == airID);

@@ -58,4 +58,13 @@ public class ArrayChunk implements Chunk {
     public GraphicBatch getGraphic() {
         return graphicBatch;
     }
+
+    @Override
+    public void cleanup() {
+        dirtyFlag = false;
+        if (graphicBatch != null) {
+            graphicBatch.cleanup();
+            graphicBatch = null;
+        }
+    }
 }

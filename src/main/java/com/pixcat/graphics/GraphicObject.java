@@ -13,6 +13,8 @@ public class GraphicObject {
 
     public GraphicObject(Mesh mesh) {
         this.mesh = mesh;
+        if (mesh == null)
+            throw new IllegalArgumentException("Graphic object can not have null mesh");
         position = new Vector3f(0.0f, 0.0f, 0.0f);
         scale = 1.0f;
         worldMatrix = new Matrix4f();
@@ -53,5 +55,13 @@ public class GraphicObject {
         worldMatrix.translate(position);
         worldMatrix.scale(scale);
         return worldMatrix;
+    }
+
+    public void cleanup() {
+        mesh.cleanup();
+        mesh = null;
+        texture = null;
+        position = null;
+        worldMatrix = null;
     }
 }

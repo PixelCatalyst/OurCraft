@@ -21,4 +21,6 @@ public interface Chunk {
     void applyBuild(Mesher mesher, NeumannNeighborhood neighbors, Texture[] materials);
 
     GraphicBatch getGraphic();
+
+    void cleanup();
 }

@@ -86,4 +86,11 @@ public class GraphicBatch {
         worldMatrix.mul(objects.get(iterator).getWorldMatrix());
         return worldMatrix;
     }
+
+    public void cleanup() {
+        for (GraphicObject object : objects)
+            object.cleanup();
+        objects.clear();
+        iterator = 0;
+    }
 }
