@@ -29,7 +29,7 @@ public class Renderer {
         window.bindAsCurrent();
     }
 
-    public void initAssets() throws IllegalStateException {
+    public void initAssets() {
         if (window == null)
             throw new IllegalStateException("Window not created before initializing assets");
         shaderProgram = new ShaderProgram();

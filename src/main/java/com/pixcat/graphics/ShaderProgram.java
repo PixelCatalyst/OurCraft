@@ -16,22 +16,22 @@ public class ShaderProgram {
 
     private final Map<String, Integer> uniforms;
 
-    public ShaderProgram() throws IllegalStateException {
+    public ShaderProgram() {
         programID = glCreateProgram();
         if (programID == 0)
             throw new IllegalStateException("Error initializing shader");
         uniforms = new HashMap<>();
     }
 
-    public void createVertexShader(String shaderCode) throws IllegalStateException {
+    public void createVertexShader(String shaderCode) {
         vertexShaderID = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
-    public void createFragmentShader(String shaderCode) throws IllegalStateException {
+    public void createFragmentShader(String shaderCode) {
         fragmentShaderID = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
-    private int createShader(String shaderCode, int shaderType) throws IllegalStateException {
+    private int createShader(String shaderCode, int shaderType) {
         int shaderID = glCreateShader(shaderType);
         if (shaderID == 0)
             throw new IllegalStateException("Error creating shader");
@@ -44,7 +44,7 @@ public class ShaderProgram {
         return shaderID;
     }
 
-    public void link() throws IllegalStateException {
+    public void link() {
         glLinkProgram(programID);
         if (glGetProgrami(programID, GL_LINK_STATUS) == 0)
             throw new IllegalStateException("Error linking shader code: " + getCurrentInfoLog());
@@ -64,7 +64,7 @@ public class ShaderProgram {
         return glGetProgramInfoLog(programID, maxLength);
     }
 
-    public void createUniform(String uniformName) throws IllegalStateException {
+    public void createUniform(String uniformName) {
         if (programID == 0)
             throw new IllegalStateException("Could not create uniform in not compiled shader");
         int uniformLocation = glGetUniformLocation(programID, uniformName);
@@ -73,7 +73,7 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
 
-    public void setUniform(String uniformName, Matrix4f value) throws IllegalStateException {
+    public void setUniform(String uniformName, Matrix4f value) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = stack.mallocFloat(16); //4x4 floats
             value.get(buffer);
@@ -84,7 +84,7 @@ public class ShaderProgram {
         }
     }
 
-    public void setUniform(String uniformName, int value) throws IllegalStateException {
+    public void setUniform(String uniformName, int value) {
         Integer location = uniforms.get(uniformName);
         if (location == null)
             throw new IllegalStateException("Tried to set non existing int uniform");

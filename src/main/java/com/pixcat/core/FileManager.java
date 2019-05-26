@@ -48,7 +48,7 @@ public class FileManager {
         return builder.toString();
     }
 
-    public Texture loadTexture(String fileName) throws IllegalStateException {
+    public Texture loadTexture(String fileName) {
         int width;
         int height;
         ByteBuffer buffer;
