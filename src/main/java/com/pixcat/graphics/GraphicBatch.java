@@ -19,6 +19,10 @@ public class GraphicBatch {
         worldMatrix = new Matrix4f();
     }
 
+    public int size() {
+        return objects.size();
+    }
+
     public void addObject(GraphicObject g) {
         objects.add(g);
     }
@@ -33,6 +37,14 @@ public class GraphicBatch {
 
     public void next() {
         ++iterator;
+    }
+
+    public GraphicObject getObject() {
+        return objects.get(iterator);
+    }
+
+    public GraphicObject getObject(int index) {
+        return objects.get(index);
     }
 
     public Mesh getMesh() {

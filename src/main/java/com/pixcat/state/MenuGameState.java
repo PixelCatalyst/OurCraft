@@ -2,32 +2,26 @@ package com.pixcat.state;
 
 import com.pixcat.core.FileManager;
 import com.pixcat.core.InputBuffer;
-import com.pixcat.core.MouseAction;
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.*;
+import com.pixcat.graphics.gui.GUIFactory;
+import com.pixcat.graphics.gui.Menu;
+import com.pixcat.graphics.gui.StaticImage;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class MenuGameState implements GameState {
     private World world;
     private GUIFactory gui;
+    private FileManager fm;
 
-    private Texture backgroundTex;
-    private Texture startBtnTex;
-    private Texture exitBtnTex;
-
+    private Menu mainMenu;
     private StaticImage backgroundImg;
-    private Button playButton;
-    private Button exitButton;
 
     public MenuGameState(World world) {
         this.world = world;
         this.gui = GUIFactory.getInstance();
-
-        FileManager fm = FileManager.getInstance();
-        backgroundTex = fm.loadTexture("menu_background.png");
-        startBtnTex = fm.loadTexture("start_button.png");
-        exitBtnTex = fm.loadTexture("exit_button.png");
+        this.fm = FileManager.getInstance();
     }
 
     @Override
@@ -35,21 +29,13 @@ public class MenuGameState implements GameState {
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
 
-        playButton
-            .viewport(windowWidth, windowHeight)
-            .setPositionRel(0.5f, 0.5f)
-            .selfCenter()
-            .move(0, -exitButton.getHeight());
-
-        exitButton
-            .viewport(windowWidth, windowHeight)
-            .setPositionRel(0.5f, 0.5f)
-            .selfCenter()
-            .move(0, exitButton.getHeight());
+        mainMenu
+                .viewport(windowWidth, windowHeight)
+                .setPositionRel(0.0f, 0.3f)
+                .centerAll();
 
         renderer.draw(backgroundImg);
-        renderer.draw(playButton);
-        renderer.draw(exitButton);
+        renderer.draw(mainMenu.getGraphicsBatch());
     }
 
     @Override
@@ -57,10 +43,10 @@ public class MenuGameState implements GameState {
         if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
             return null; // exit game
 
-        MouseAction mouseAction = input.getMouseAction();
-        if (playButton.wasClicked(mouseAction, MouseAction.Button.LEFT))
+        mainMenu.updateInput(input);
+        if (mainMenu.buttonWasClicked("start"))
             return new PlayGameState(world);
-        if (exitButton.wasTouched(mouseAction))
+        if (mainMenu.buttonWasClicked("exit"))
             return null;
 
         return this;
@@ -73,8 +59,10 @@ public class MenuGameState implements GameState {
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
 
-        backgroundImg = gui.makeImage(backgroundTex, windowWidth, windowHeight);
-        playButton = gui.makeButton(startBtnTex, null, null);
-        exitButton = gui.makeButton(exitBtnTex, null, null);
+        mainMenu = new Menu()
+                .createButton("start", fm.loadTexture("start_button.png"))
+                .createButton("exit", fm.loadTexture("exit_button.png"));
+
+        backgroundImg = gui.makeImage(fm.loadTexture("menu_background.png"), windowWidth, windowHeight);
     }
 }

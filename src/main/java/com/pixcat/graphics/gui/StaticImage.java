@@ -44,14 +44,21 @@ public class StaticImage extends GraphicObject {
     }
 
     // set position relative to the viewport size
-    public StaticImage setPositionRel(float relX, float relY) {
-        int left = (int)(relX * viewportWidth);
-        int top = (int)(relY * viewportHeight);
-        setPosition(left, top);
+    public StaticImage setPositionRel(Float relX, Float relY) {
+        float x = relX == null? getX() : (relX * viewportWidth);
+        float y = relY == null? getY() : (relY * viewportHeight);
+        setPosition((int) x, (int) y);
         return this;
     }
 
     public StaticImage move(int offsetX, int offsetY) {
+        setPosition(getX() + offsetX, getY() + offsetY);
+        return this;
+    }
+
+    public StaticImage moveRel(int relOffsetX, int relOffsetY) {
+        int offsetX = (int)(relOffsetX * viewportWidth);
+        int offsetY = (int)(relOffsetX * viewportWidth);
         setPosition(getX() + offsetX, getY() + offsetY);
         return this;
     }
