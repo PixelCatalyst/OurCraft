@@ -1,5 +1,7 @@
 package com.pixcat.core;
 
+import org.joml.Vector3f;
+
 public class MouseAction {
 
     public enum Button {
@@ -46,5 +48,10 @@ public class MouseAction {
 
     public double getY() {
         return y;
+    }
+
+    public void translateCoords(Vector3f offset) {
+        this.x -= offset.x;
+        this.y -= offset.y;
     }
 }

@@ -96,8 +96,7 @@ public class PlayGameState implements GameState {
         lastT = (float) elapsedTime;
     }
 
-    @Override
-    public void onEnter() {
+    public void onEnter(Renderer renderer) {
         isEntering = true;
 
         //TODO temp, should be in StartState
@@ -107,8 +106,7 @@ public class PlayGameState implements GameState {
         testCam = world.getPlayerCamera();
     }
 
-    @Override
-    public void onExit() {
+    public void onExit(Renderer renderer) {
         if (exitingInput != null)
             exitingInput.setMouseUnlocked();
     }

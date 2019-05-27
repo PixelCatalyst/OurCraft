@@ -4,7 +4,7 @@ import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
 import com.pixcat.state.GameState;
 import com.pixcat.state.MenuGameState;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -31,7 +31,7 @@ public class Game {
         world = new World();
         timer = new Timer();
         currentState = new MenuGameState(world);
-        currentState.onEnter();
+        currentState.onEnter(renderer);
     }
 
     private void initGLFW() {
@@ -60,12 +60,14 @@ public class Game {
         input.update();
         GameState nextState = currentState.handleInput(input);
         if (nextState == null) {
-            currentState.onExit();
+            currentState.onExit(renderer);
+            input.clearKeyBuffer();
             currentState = null;
             renderer.destroyWindow();
         } else if (nextState != currentState) {
-            currentState.onExit();
-            nextState.onEnter();
+            currentState.onExit(renderer);
+            input.clearKeyBuffer();
+            nextState.onEnter(renderer);
             currentState = nextState;
         }
     }
