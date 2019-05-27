@@ -37,6 +37,12 @@ public class StaticImage extends GraphicObject {
         return this;
     }
 
+    public StaticImage setSize(float width, float height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
     public StaticImage viewport(int viewportWidth, int viewportHeight) {
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
@@ -57,8 +63,8 @@ public class StaticImage extends GraphicObject {
     }
 
     public StaticImage moveRel(int relOffsetX, int relOffsetY) {
-        int offsetX = (int)(relOffsetX * viewportWidth);
-        int offsetY = (int)(relOffsetX * viewportWidth);
+        int offsetX = relOffsetX * viewportWidth;
+        int offsetY = relOffsetX * viewportWidth;
         setPosition(getX() + offsetX, getY() + offsetY);
         return this;
     }

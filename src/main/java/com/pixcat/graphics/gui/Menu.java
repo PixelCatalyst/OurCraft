@@ -32,7 +32,7 @@ public class Menu {
         this.spacing = spacing;
     }
 
-    public Button getButtonByName(String name) {
+    private Button getButtonByName(String name) {
         int buttonNo = buttonIndex.get(name);
         return (Button) batch.getObject(buttonNo);
     }
@@ -47,10 +47,7 @@ public class Menu {
 
     public Menu createButton(String name, Texture texture) {
         Button button = gui.makeButton(texture, null, null);
-        button
-            .setPosition(0, offsetTop)
-            .selfCenterX();
-
+        button.setPosition(0, offsetTop);
         return addButton(name, button);
     }
 

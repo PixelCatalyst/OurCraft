@@ -3,7 +3,7 @@ package com.pixcat.state;
 import com.pixcat.core.FileManager;
 import com.pixcat.core.InputBuffer;
 import com.pixcat.gameplay.World;
-import com.pixcat.graphics.*;
+import com.pixcat.graphics.Renderer;
 import com.pixcat.graphics.gui.GUIFactory;
 import com.pixcat.graphics.gui.Menu;
 import com.pixcat.graphics.gui.StaticImage;
@@ -26,6 +26,9 @@ public class MenuGameState implements GameState {
 
     @Override
     public void draw(Renderer renderer) {
+        renderer.setBackgroundColor(0.31f, 0.55f, 0.82f);
+        renderer.setOrthographic();
+
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
 
@@ -34,7 +37,7 @@ public class MenuGameState implements GameState {
                 .setPositionRel(0.0f, 0.3f)
                 .centerAll();
 
-        renderer.draw(backgroundImg);
+        renderer.draw(backgroundImg.setSize(windowWidth, windowHeight));
         renderer.draw(mainMenu.getGraphicsBatch());
     }
 
@@ -53,9 +56,6 @@ public class MenuGameState implements GameState {
     }
 
     public void onEnter(Renderer renderer) {
-        renderer.setBackgroundColor(0.31f, 0.55f, 0.82f);
-        renderer.setOrthographic();
-
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
 
