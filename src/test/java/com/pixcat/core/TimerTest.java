@@ -23,9 +23,9 @@ public class TimerTest {
             Thread.sleep(2000);
             double afterThreeSeconds = afterSecond + testTimer.getElapsedSeconds();
 
-            final double tenMillisecondsMargin = 0.01;
-            assertEquals(afterSecond, 1.0, tenMillisecondsMargin);
-            assertEquals(afterThreeSeconds, 3.0, tenMillisecondsMargin);
+            final double oneFrameMargin = 1.0 / 60.0;
+            assertEquals(1.0, afterSecond, oneFrameMargin);
+            assertEquals(3.0, afterThreeSeconds, oneFrameMargin);
         } catch (InterruptedException e) {
             throw new RuntimeException("Unexpected interrupt");
         }
