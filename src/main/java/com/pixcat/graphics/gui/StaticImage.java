@@ -1,5 +1,6 @@
-package com.pixcat.graphics;
+package com.pixcat.graphics.gui;
 
+import com.pixcat.graphics.GraphicObject;
 import com.pixcat.mesh.Mesh;
 import org.joml.Matrix4f;
 

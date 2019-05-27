@@ -1,5 +1,6 @@
-package com.pixcat.graphics;
+package com.pixcat.graphics.gui;
 
+import com.pixcat.graphics.Texture;
 import com.pixcat.mesh.Mesh;
 
 public class GUIFactory {

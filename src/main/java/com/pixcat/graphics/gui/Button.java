@@ -1,4 +1,4 @@
-package com.pixcat.graphics;
+package com.pixcat.graphics.gui;
 
 import com.pixcat.core.MouseAction;
 import com.pixcat.mesh.Mesh;
