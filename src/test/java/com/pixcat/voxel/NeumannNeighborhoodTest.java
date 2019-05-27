@@ -54,5 +54,12 @@ public class NeumannNeighborhoodTest {
         assertNotNull(testNeighborhood.east);
         assertNotNull(testNeighborhood.south);
         assertNotNull(testNeighborhood.north);
+        assertEquals(new Coord3Int(0, 0, 0), testNeighborhood.central.getWorldPosition());
+        assertEquals(new Coord3Int(-1, 0, 0), testNeighborhood.bottom.getWorldPosition());
+        assertEquals(new Coord3Int(1, 0, 0), testNeighborhood.top.getWorldPosition());
+        assertEquals(new Coord3Int(0, -1, 0), testNeighborhood.west.getWorldPosition());
+        assertEquals(new Coord3Int(0, 1, 0), testNeighborhood.east.getWorldPosition());
+        assertEquals(new Coord3Int(0, 0, -1), testNeighborhood.south.getWorldPosition());
+        assertEquals(new Coord3Int(0, 0, 1), testNeighborhood.north.getWorldPosition());
     }
 }
