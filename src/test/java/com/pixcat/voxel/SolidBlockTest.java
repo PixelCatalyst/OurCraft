@@ -3,6 +3,7 @@ package com.pixcat.voxel;
 import com.pixcat.core.FileManager;
 import com.pixcat.graphics.Texture;
 import com.pixcat.graphics.Window;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,13 @@ public class SolidBlockTest {
         assertEquals("name", testBlock.getName());
         assertEquals(testTexture, testBlock.getTexture());
     }
+
+
+    @Test
+    public void testEqualsHashCode() {
+        EqualsVerifier.forClass(SolidBlock.class).verify();
+    }
+
 
     @After
     public void tearDown() {
