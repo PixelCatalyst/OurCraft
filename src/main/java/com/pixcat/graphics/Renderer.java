@@ -123,11 +123,21 @@ public class Renderer {
         }
     }
 
-    private void drawMesh(Mesh m) {
-        glBindVertexArray(m.getVaoID());
+    private void drawMesh(Mesh toDraw) {
+        glBindVertexArray(toDraw.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glDrawElements(GL_TRIANGLES, m.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, toDraw.getVertexCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    public void drawWireframe(GraphicObject object) {
+        Mesh mesh = object.getMesh();
+        Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, object.getWorldMatrix());
+        shaderProgram.setUniform("wvpMatrix", wvpMatrix);
+        glBindVertexArray(mesh.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glDrawElements(GL_LINES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
     }
 
     public void endFrame() {
