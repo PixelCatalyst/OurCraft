@@ -5,7 +5,7 @@ import com.pixcat.graphics.Texture;
 import com.pixcat.mesh.Mesher;
 
 public class ArrayChunk implements Chunk {
-    private static final int size = 16;
+    private static final int size = Chunk.getSize();
     private byte[][][] voxels;
     private Coord3Int position;
     private GraphicBatch graphicBatch;
@@ -34,11 +34,6 @@ public class ArrayChunk implements Chunk {
     public void setVoxelID(int y, int x, int z, byte ID) {
         voxels[x][y][z] = ID;
         dirtyFlag = true;
-    }
-
-    @Override
-    public int getSize() {
-        return size;
     }
 
     @Override

@@ -24,7 +24,6 @@ public class World implements Subject {
 
     private Vector2i playerChunkColumn;
     private Vector4i chunkArea;
-    private final int chunkSize = 16;
 
     private ArrayList<Observer> observers;
 
@@ -34,7 +33,7 @@ public class World implements Subject {
         voxels = new VirtualArray(5);
         setupBlocks();
         //mesher = new MarchMesher();
-        mesher = new GreedyMesher(chunkSize);
+        mesher = new GreedyMesher();
         observers = new ArrayList<>();
     }
 
@@ -77,7 +76,7 @@ public class World implements Subject {
 
     public void beginGeneration(String seed) {
         final int heightInChunks = voxels.getHeight();
-        terrainGen = new TerrainGenerator(2123, chunkSize, heightInChunks);
+        terrainGen = new TerrainGenerator(2123, heightInChunks);
         int diameter = voxels.getDiameter();
         int planeMin = -(diameter / 2);
         int planeMax = (diameter / 2);
@@ -89,7 +88,7 @@ public class World implements Subject {
             currColumn[i] = null;
         for (int x = planeMin; x <= planeMax; ++x) {
             for (int z = planeMin; z <= planeMax; ++z) {
-                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * chunkSize), (z * chunkSize));
+                int heightAtFirstBlock = terrainGen.fillColumn(currColumn, (x * Chunk.getSize()), (z * Chunk.getSize()));
                 if ((x == 0) && (z == 0))
                     initPlayerPosition(heightAtFirstBlock);
                 for (int y = 0; y < heightInChunks; ++y)
@@ -103,15 +102,15 @@ public class World implements Subject {
         Vector3f playerPos = new Vector3f(1.5f, (float) height + 1.7f, 1.5f);
         playerCamera.setPosition(playerPos.x, playerPos.y, playerPos.z);
         playerChunkColumn = new Vector2i(
-                (int) Math.ceil(playerPos.x) / chunkSize,
-                (int) Math.ceil(playerPos.z) / chunkSize);
+                (int) Math.ceil(playerPos.x) / Chunk.getSize(),
+                (int) Math.ceil(playerPos.z) / Chunk.getSize());
     }
 
     public void updateChunks() {
         Vector3f playerPos = playerCamera.getPosition();
-        double roundedX = (playerPos.x > 0.0 ? Math.ceil(playerPos.x) : Math.floor(playerPos.x) - (double) chunkSize);
-        double roundedZ = (playerPos.z > 0.0 ? Math.ceil(playerPos.z) : Math.floor(playerPos.z) - (double) chunkSize);
-        Vector2i chunkPos = new Vector2i((int) roundedX / chunkSize, (int) roundedZ / chunkSize);
+        double roundedX = (playerPos.x > 0.0 ? Math.ceil(playerPos.x) : Math.floor(playerPos.x) - (double) Chunk.getSize());
+        double roundedZ = (playerPos.z > 0.0 ? Math.ceil(playerPos.z) : Math.floor(playerPos.z) - (double) Chunk.getSize());
+        Vector2i chunkPos = new Vector2i((int) roundedX / Chunk.getSize(), (int) roundedZ / Chunk.getSize());
         Vector2i chunkDiff = new Vector2i(chunkPos).sub(playerChunkColumn);
         playerChunkColumn = chunkPos;
         Vector4i movedChunkArea = new Vector4i(
@@ -162,7 +161,7 @@ public class World implements Subject {
     }
 
     private void generateColumn(int x, int z, Chunk[] workingColumn) {
-        terrainGen.fillColumn(workingColumn, (x * chunkSize), (z * chunkSize));
+        terrainGen.fillColumn(workingColumn, (x * Chunk.getSize()), (z * Chunk.getSize()));
         for (int y = 0; y < voxels.getHeight(); ++y)
             voxels.putChunk(y, x, z, workingColumn[y]);
     }

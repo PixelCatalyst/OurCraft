@@ -156,11 +156,10 @@ public class MarchMesher implements Mesher {
         Chunk toMesh = chunkWithNeighbors.central;
         VisibleFaces visibleFaces = new VisibleFaces();
         final byte air = (byte) 0;
-        final int chunkSize = toMesh.getSize();
 
-        for (int y = 0; y < chunkSize; ++y) {
-            for (int x = 0; x < chunkSize; ++x) {
-                for (int z = 0; z < chunkSize; ++z) {
+        for (int y = 0; y < Chunk.getSize(); ++y) {
+            for (int x = 0; x < Chunk.getSize(); ++x) {
+                for (int z = 0; z < Chunk.getSize(); ++z) {
                     byte voxelID = toMesh.getVoxelID(y, x, z);
                     if (voxelID != air) {
                         getVisibility(toMesh, y, x, z, visibleFaces);
@@ -176,14 +175,14 @@ public class MarchMesher implements Mesher {
             }
         }
         Coord3Int pos = toMesh.getWorldPosition();
-        chunkBatch.setPosition(pos.x * chunkSize, pos.y * chunkSize, pos.z * chunkSize);
+        chunkBatch.setPosition(pos.x * Chunk.getSize(), pos.y * Chunk.getSize(), pos.z * Chunk.getSize());
         chunkBatch.bakeTextures();
         return chunkBatch;
     }
 
     private void getVisibility(Chunk chunk, int y, int x, int z, VisibleFaces output) {
         //f0-back, 1-front, 2-left, 3-right, 4-bottom, 5-top
-        int max = chunk.getSize() - 1;
+        int max = Chunk.getSize() - 1;
         final byte air = (byte) 0;
         if (y == 0) {
             output.face[4] = true;

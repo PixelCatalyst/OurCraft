@@ -35,9 +35,9 @@ public class ArrayChunkTest {
 
     @Test
     public void testDefaultIDZero() {
-        for (int y = 0; y < testChunk.getSize(); ++y) {
-            for (int x = 0; x < testChunk.getSize(); ++x) {
-                for (int z = 0; z < testChunk.getSize(); ++z) {
+        for (int y = 0; y < Chunk.getSize(); ++y) {
+            for (int x = 0; x < Chunk.getSize(); ++x) {
+                for (int z = 0; z < Chunk.getSize(); ++z) {
                     assertEquals(testChunk.getVoxelID(y, x, z), (byte) 0);
                 }
             }
@@ -47,9 +47,9 @@ public class ArrayChunkTest {
     @Test
     public void testSetAllChunkToID() {
         final byte ID = 2;
-        for (int y = 0; y < testChunk.getSize(); ++y) {
-            for (int x = 0; x < testChunk.getSize(); ++x) {
-                for (int z = 0; z < testChunk.getSize(); ++z) {
+        for (int y = 0; y < Chunk.getSize(); ++y) {
+            for (int x = 0; x < Chunk.getSize(); ++x) {
+                for (int z = 0; z < Chunk.getSize(); ++z) {
                     testChunk.setVoxelID(y, x, z, ID);
 
                     assertEquals(ID, testChunk.getVoxelID(y, x, z));
@@ -60,12 +60,12 @@ public class ArrayChunkTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testOutOfBounds() {
-        testChunk.setVoxelID(testChunk.getSize() + 15, 0, 0, (byte) 0);
+        testChunk.setVoxelID(Chunk.getSize() + 15, 0, 0, (byte) 0);
     }
 
     @Test
     public void testSizeIsGreaterThanZero() {
-        int size = testChunk.getSize();
+        int size = Chunk.getSize();
 
         assertTrue(size > 0);
     }

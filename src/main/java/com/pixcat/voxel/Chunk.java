@@ -14,7 +14,9 @@ public interface Chunk {
 
     void setVoxelID(int y, int x, int z, byte ID);
 
-    int getSize();
+    static int getSize() {
+        return 16;
+    }
 
     boolean needRebuild();
 

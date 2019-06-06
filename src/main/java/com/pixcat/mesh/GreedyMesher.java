@@ -26,7 +26,6 @@ public class GreedyMesher implements Mesher {
         }
     }
 
-    private final int chunkSize;
     private final int maxAxis;
     private final byte airID;
     private final VoxelFace[][][] voxels;
@@ -36,11 +35,11 @@ public class GreedyMesher implements Mesher {
     private final float[] workingVertices;
     private final float[] workingTexCoords;
 
-    public GreedyMesher(int chunkSize) {
+    public GreedyMesher() {
+        int chunkSize = Chunk.getSize();
         if (chunkSize < 1)
             throw new IllegalArgumentException("Chunk size can not be less than 1");
-        this.chunkSize = chunkSize;
-        maxAxis = chunkSize - 1;
+        maxAxis = Chunk.getSize() - 1;
         voxels = new VoxelFace[chunkSize][chunkSize][chunkSize];
         airID = 0;
         mask = new VoxelFace[chunkSize * chunkSize];
@@ -87,10 +86,10 @@ public class GreedyMesher implements Mesher {
                 else
                     side = (backFace ? VoxelFace.SOUTH : VoxelFace.NORTH);
 
-                for (x[dimension] = -1; x[dimension] < chunkSize; ) {
+                for (x[dimension] = -1; x[dimension] < Chunk.getSize(); ) {
                     n = 0;
-                    for (x[v] = 0; x[v] < chunkSize; ++x[v]) {
-                        for (x[u] = 0; x[u] < chunkSize; ++x[u]) {
+                    for (x[v] = 0; x[v] < Chunk.getSize(); ++x[v]) {
+                        for (x[u] = 0; x[u] < Chunk.getSize(); ++x[u]) {
                             if (x[dimension] >= 0)
                                 firstFace = getVoxelFace(x[0], x[1], x[2], side);
                             else
@@ -110,12 +109,12 @@ public class GreedyMesher implements Mesher {
                     ++x[dimension];
 
                     n = 0;
-                    for (int j = 0; j < chunkSize; ++j) {
-                        for (int i = 0; i < chunkSize; ) {
+                    for (int j = 0; j < Chunk.getSize(); ++j) {
+                        for (int i = 0; i < Chunk.getSize(); ) {
                             if (mask[n] != null) {
 
                                 width = 1;
-                                while ((i + width) < chunkSize) {
+                                while ((i + width) < Chunk.getSize()) {
                                     VoxelFace currFace = mask[n + width];
                                     if (currFace == null || !currFace.equals(mask[n]))
                                         break;
@@ -123,9 +122,9 @@ public class GreedyMesher implements Mesher {
                                 }
 
                                 boolean done = false;
-                                for (height = 1; (j + height) < chunkSize; ++height) {
+                                for (height = 1; (j + height) < Chunk.getSize(); ++height) {
                                     for (int k = 0; k < width; ++k) {
-                                        VoxelFace currFace = mask[n + k + (height * chunkSize)];
+                                        VoxelFace currFace = mask[n + k + (height * Chunk.getSize())];
                                         if (currFace == null || !currFace.equals(mask[n])) {
                                             done = true;
                                             break;
@@ -153,7 +152,7 @@ public class GreedyMesher implements Mesher {
 
                                 for (int m = 0; m < height; ++m) {
                                     for (int k = 0; k < width; ++k)
-                                        mask[n + k + (m * chunkSize)] = null;
+                                        mask[n + k + (m * Chunk.getSize())] = null;
                                 }
 
                                 i += width;
@@ -170,16 +169,16 @@ public class GreedyMesher implements Mesher {
         }
 
         Coord3Int pos = toMesh.getWorldPosition();
-        batch.setPosition(pos.x * chunkSize, pos.y * chunkSize, pos.z * chunkSize);
+        batch.setPosition(pos.x * Chunk.getSize(), pos.y * Chunk.getSize(), pos.z * Chunk.getSize());
         batch.bakeTextures();
         return batch;
     }
 
     private void readChunk(NeumannNeighborhood chunkWithNeighbors) {
         Chunk chunk = chunkWithNeighbors.central;
-        for (int x = 0; x < chunkSize; ++x) {
-            for (int y = 0; y < chunkSize; ++y) {
-                for (int z = 0; z < chunkSize; ++z) {
+        for (int x = 0; x < Chunk.getSize(); ++x) {
+            for (int y = 0; y < Chunk.getSize(); ++y) {
+                for (int z = 0; z < Chunk.getSize(); ++z) {
                     VoxelFace face = new VoxelFace();
                     face.type = chunk.getVoxelID(y, x, z);
                     fillCulling(chunkWithNeighbors, y, x, z, face.visible);
