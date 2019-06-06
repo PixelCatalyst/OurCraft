@@ -44,6 +44,7 @@ public class ArrayChunk implements Chunk {
     @Override
     public void applyBuild(Mesher mesher, NeumannNeighborhood neighbors, Texture[] materials) {
         if (dirtyFlag) {
+            cleanup();
             graphicBatch = mesher.processChunk(neighbors, materials);
             dirtyFlag = false;
         }
