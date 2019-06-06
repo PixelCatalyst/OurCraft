@@ -2,7 +2,6 @@ package com.pixcat.gameplay;
 
 import com.pixcat.voxel.Chunk;
 import com.pixcat.voxel.SpatialStructure;
-import com.pixcat.voxel.VirtualArray;
 import org.joml.Vector3f;
 import org.joml.Matrix4f;
 
@@ -12,6 +11,7 @@ public class Camera {
     private float fieldOfView;
     private float nearClippingDist;
     private float farClippingDist;
+    private float maxAngle;
 
     private Vector3f position;
     private Vector3f rotation;
@@ -23,6 +23,7 @@ public class Camera {
         fieldOfView = (float) Math.toRadians(60.0);
         nearClippingDist = 0.01f;
         farClippingDist = 1000.0f;
+        maxAngle = 90.0f;
 
         position = new Vector3f(x, y, z);
         rotation = new Vector3f(0.0f, 0.0f, 0.0f);
@@ -58,8 +59,8 @@ public class Camera {
             position.z += (float) Math.cos(Math.toRadians(rotation.y)) * offsetZ;
         }
         if (offsetX != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
+            position.x += (float) Math.sin(Math.toRadians(rotation.y - maxAngle)) * -1.0f * offsetX;
+            position.z += (float) Math.cos(Math.toRadians(rotation.y - maxAngle)) * offsetX;
         }
         position.y += offsetY;
     }
@@ -79,10 +80,10 @@ public class Camera {
         rotation.y += offsetY;
         rotation.z += offsetZ;
 
-        if (rotation.x > 85.0f)
-            rotation.x = 85.0f;
-        else if (rotation.x < -85.0f)
-            rotation.x = -85.0f;
+        if (rotation.x > maxAngle)
+            rotation.x = maxAngle;
+        else if (rotation.x < -maxAngle)
+            rotation.x = -maxAngle;
     }
 
     public ArrayList<Chunk> getVisibleChunks(SpatialStructure voxels) {
