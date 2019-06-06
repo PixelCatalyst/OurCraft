@@ -65,6 +65,13 @@ public class Camera {
         position.y += offsetY;
     }
 
+    public Vector3f getDirection() {
+        Vector3f direction = new Vector3f(0.0f, 0.0f, -1.0f);
+        direction.rotateX((float) Math.toRadians(-rotation.x));
+        direction.rotateY((float) Math.toRadians(-rotation.y));
+        return direction;
+    }
+
     public Vector3f getRotation() {
         return new Vector3f(rotation);
     }
