@@ -131,6 +131,10 @@ public class Renderer {
     }
 
     public void drawWireframe(GraphicObject object) {
+        boolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+        if (depthTestEnabled)
+            glDisable(GL_DEPTH_TEST);
+        glBindTexture(GL_TEXTURE_2D, 0);
         Mesh mesh = object.getMesh();
         Matrix4f wvpMatrix = transform.getModelTrans(projectionMatrix, object.getWorldMatrix());
         shaderProgram.setUniform("wvpMatrix", wvpMatrix);
@@ -138,6 +142,8 @@ public class Renderer {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glDrawElements(GL_LINES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+        if (depthTestEnabled)
+            glEnable(GL_DEPTH_TEST);
     }
 
     public void endFrame() {
