@@ -1,6 +1,7 @@
 package com.pixcat.gameplay;
 
 import com.pixcat.core.FileManager;
+import com.pixcat.core.MouseAction;
 import com.pixcat.graphics.Texture;
 import com.pixcat.mesh.GreedyMesher;
 import com.pixcat.noisegen.TerrainGenerator;
@@ -8,10 +9,9 @@ import com.pixcat.voxel.*;
 import com.pixcat.mesh.Mesher;
 import com.pixcat.mesh.MarchMesher;
 import com.pixcat.graphics.Renderer;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
-import org.joml.Vector4i;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,6 +20,7 @@ public class World implements Subject {
     private Metrics playerMetrics;
     private TerrainGenerator terrainGen;
     private SpatialStructure voxels;
+    private BlockCursor blockCursor;
     private Mesher mesher;
 
     private Vector2i playerChunkColumn;
@@ -32,6 +33,7 @@ public class World implements Subject {
         playerMetrics = new Metrics();
         voxels = new VirtualArray(5);
         setupBlocks();
+        blockCursor = new BlockCursor();
         //mesher = new MarchMesher();
         mesher = new GreedyMesher();
         observers = new ArrayList<>();
@@ -196,6 +198,19 @@ public class World implements Subject {
         return playerCamera;
     }
 
+    public void updateBlockCursor(MouseAction mouseAction) {
+        Vector3f position = playerCamera.getPosition();
+        Vector3f direction = playerCamera.getDirection();
+        blockCursor.castRay(position, direction, voxels);
+        if (mouseAction.getEvent() == MouseAction.Event.PRESS) {
+            if (mouseAction.getButton() == MouseAction.Button.LEFT) {
+                byte deletedBlockID = blockCursor.deleteCurrentBlock(voxels);
+                //TODO ID -> achievements
+            } else if (mouseAction.getButton() == MouseAction.Button.RIGHT)
+                blockCursor.placeNewBlock(voxels);
+        }
+    }
+
     public void drawChunks(Renderer renderer) {
         Texture[] materials = new Texture[voxels.getTypeCount()];
         for (byte i = 1; i <= materials.length; ++i)
@@ -212,6 +227,7 @@ public class World implements Subject {
             }
             renderer.draw(chunk.getGraphic());
         }
+        blockCursor.draw(renderer);
     }
 
     public void drawStatusBar(Renderer renderer) {

@@ -86,6 +86,8 @@ public class PlayGameState implements GameState {
             testCam.movePosition(0, -moveSpeed * lastT, 0);
         exitingInput = input;
 
+        world.updateBlockCursor(input.getMouseAction());
+
         return this;
     }
 
