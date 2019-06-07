@@ -2,15 +2,16 @@ package com.pixcat.gameplay;
 
 import com.pixcat.core.FileManager;
 import com.pixcat.core.MouseAction;
+import com.pixcat.graphics.Renderer;
 import com.pixcat.graphics.Texture;
 import com.pixcat.mesh.GreedyMesher;
+import com.pixcat.mesh.Mesher;
 import com.pixcat.noisegen.TerrainGenerator;
 import com.pixcat.voxel.*;
-import com.pixcat.mesh.Mesher;
-import com.pixcat.graphics.Renderer;
-import org.joml.*;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
+import org.joml.Vector4i;
 
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Iterator;
 
