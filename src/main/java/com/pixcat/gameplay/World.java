@@ -7,7 +7,6 @@ import com.pixcat.mesh.GreedyMesher;
 import com.pixcat.noisegen.TerrainGenerator;
 import com.pixcat.voxel.*;
 import com.pixcat.mesh.Mesher;
-import com.pixcat.mesh.MarchMesher;
 import com.pixcat.graphics.Renderer;
 import org.joml.*;
 
@@ -34,7 +33,6 @@ public class World implements Subject {
         voxels = new VirtualArray(5);
         setupBlocks();
         blockCursor = new BlockCursor();
-        //mesher = new MarchMesher();
         mesher = new GreedyMesher();
         observers = new ArrayList<>();
     }
