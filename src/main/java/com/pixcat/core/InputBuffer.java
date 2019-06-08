@@ -16,8 +16,12 @@ public class InputBuffer {
     private static class KeyCallback extends GLFWKeyCallback {
         Map<Integer, Boolean> stateBuffer;
 
-        KeyCallback() {
+        public void clearBuffer() {
             stateBuffer = new HashMap<>();
+        }
+
+        KeyCallback() {
+            clearBuffer();
         }
 
         @Override
@@ -51,6 +55,7 @@ public class InputBuffer {
                 button = MouseAction.Button.LEFT;
             else if (mousekey == GLFW_MOUSE_BUTTON_RIGHT)
                 button = MouseAction.Button.RIGHT;
+
             MouseAction.Event event = MouseAction.Event.NONE;
             if (action == GLFW_PRESS)
                 event = MouseAction.Event.PRESS;
@@ -142,5 +147,9 @@ public class InputBuffer {
 
     public void update() {
         glfwPollEvents();
+    }
+
+    public void clearKeyBuffer() {
+        keyCallback.clearBuffer();
     }
 }

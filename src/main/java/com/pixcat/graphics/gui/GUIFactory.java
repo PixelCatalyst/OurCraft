@@ -1,6 +1,6 @@
-package com.pixcat.graphics;
+package com.pixcat.graphics.gui;
 
-import com.pixcat.core.FileManager;
+import com.pixcat.graphics.Texture;
 import com.pixcat.mesh.Mesh;
 
 public class GUIFactory {
@@ -29,7 +29,7 @@ public class GUIFactory {
 
     public static GUIFactory getInstance() {
         if (instance == null) {
-            synchronized (FileManager.class) {
+            synchronized (GUIFactory.class) {
                 if (instance == null)
                     instance = new GUIFactory();
             }
@@ -37,14 +37,18 @@ public class GUIFactory {
         return instance;
     }
 
-    public StaticImage makeImage(int width, int height, Texture texture) {
-        StaticImage image = new StaticImage(modelMesh, width, height);
+    public StaticImage makeImage(Texture texture, Integer width, Integer height) {
+        int objWidth = width != null ? width : texture.getWidth();
+        int objHeight = height != null ? height : texture.getHeight();
+        StaticImage image = new StaticImage(modelMesh, objWidth, objHeight);
         image.setTexture(texture);
         return image;
     }
 
-    public Button makeButton(int width, int height, Texture texture) {
-        Button button = new Button(modelMesh, width, height);
+    public Button makeButton(Texture texture, Integer width, Integer height) {
+        int objWidth = width != null ? width : texture.getWidth();
+        int objHeight = height != null ? height : texture.getHeight();
+        Button button = new Button(modelMesh, objWidth, objHeight);
         button.setTexture(texture);
         return button;
     }

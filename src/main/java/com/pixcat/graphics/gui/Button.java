@@ -1,4 +1,4 @@
-package com.pixcat.graphics;
+package com.pixcat.graphics.gui;
 
 import com.pixcat.core.MouseAction;
 import com.pixcat.mesh.Mesh;
@@ -14,5 +14,13 @@ public class Button extends StaticImage {
         boolean inRight = (action.getX() <= (super.getX() + super.getWidth()));
         boolean inBottom = (action.getY() <= (super.getY() + super.getHeight()));
         return inLeftTop && inRight && inBottom;
+    }
+
+    public boolean wasClicked(MouseAction action) {
+        return wasTouched(action) && action.getEvent() == MouseAction.Event.RELEASE;
+    }
+
+    public boolean wasClicked(MouseAction action, MouseAction.Button mouseButton) {
+        return wasClicked(action) && action.getButton() == mouseButton;
     }
 }

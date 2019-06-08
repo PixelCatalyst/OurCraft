@@ -50,3 +50,8 @@ hs_err_pid*
 
 # IntelliJ
 /out/
+
+# eclipse?
+.settings/
+.project
+bin/
