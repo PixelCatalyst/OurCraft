@@ -52,6 +52,36 @@ public class VirtualArray implements SpatialStructure {
     }
 
     @Override
+    public void updateChunk(Coord3Int chunkCoord, int voxelY, int voxelX, int voxelZ) {
+        Chunk updatedChunk = chunks.get(chunkCoord);
+        if (updatedChunk != null) {
+            updatedChunk.scheduleForRebuild();
+
+            final int maxIndex = Chunk.getSize() - 1;
+            if (voxelY == 0)
+                scheduleRebuild(chunkCoord.y - 1, chunkCoord.x, chunkCoord.z);
+            else if (voxelY == maxIndex)
+                scheduleRebuild(chunkCoord.y + 1, chunkCoord.x, chunkCoord.z);
+
+            if (voxelX == 0)
+                scheduleRebuild(chunkCoord.y, chunkCoord.x - 1, chunkCoord.z);
+            else if (voxelX == maxIndex)
+                scheduleRebuild(chunkCoord.y, chunkCoord.x + 1, chunkCoord.z);
+
+            if (voxelZ == 0)
+                scheduleRebuild(chunkCoord.y, chunkCoord.x, chunkCoord.z - 1);
+            else if (voxelZ == maxIndex)
+                scheduleRebuild(chunkCoord.y, chunkCoord.x, chunkCoord.z + 1);
+        }
+    }
+
+    private void scheduleRebuild(int chunkY, int chunkX, int chunkZ) {
+        Chunk toRebuild = getChunk(chunkY, chunkX, chunkZ);
+        if (toRebuild != null)
+            toRebuild.scheduleForRebuild();
+    }
+
+    @Override
     public Chunk getChunk(int y, int x, int z) {
         return chunks.get(new Coord3Int(y, x, z));
     }

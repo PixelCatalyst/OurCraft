@@ -4,6 +4,7 @@ import com.pixcat.graphics.GraphicObject;
 import com.pixcat.graphics.Renderer;
 import com.pixcat.mesh.Mesh;
 import com.pixcat.voxel.Chunk;
+import com.pixcat.voxel.Coord3Int;
 import com.pixcat.voxel.SpatialStructure;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -138,21 +139,26 @@ public class BlockCursor {
     public byte deleteCurrentBlock(SpatialStructure voxels) {
         byte deletedID = 0;
         if ((voxels != null) && (currentID != 0)) {
-            Chunk toDelete = voxels.getChunk(currentChunkPos.y, currentChunkPos.x, currentChunkPos.z);
-            toDelete.setVoxelID(currentVoxelPos.y, currentVoxelPos.x, currentVoxelPos.z, (byte) 0);
             deletedID = currentID;
             currentID = 0;
+            handleChunkUpdate(voxels, currentChunkPos, currentVoxelPos);
         }
         return deletedID;
     }
 
     public void placeNewBlock(SpatialStructure voxels) {
         if ((voxels != null) && (currentID != 0) && traversedEmpty) {
-            Chunk toPlace = voxels.getChunk(previousChunkPos.y, previousChunkPos.x, previousChunkPos.z);
-            toPlace.setVoxelID(previousVoxelPos.y, previousVoxelPos.x, previousVoxelPos.z, (byte) 1); //TODO material change
-            currentID = 0;
-            traversedEmpty = true;
+            currentID = 1; //TODO material change
+            traversedEmpty = false;
+            handleChunkUpdate(voxels, previousChunkPos, previousVoxelPos);
         }
+    }
+
+    private void handleChunkUpdate(SpatialStructure voxels, Vector3i chunkPos, Vector3i voxelPos) {
+        Chunk toUpdate = voxels.getChunk(chunkPos.y, chunkPos.x, chunkPos.z);
+        toUpdate.setVoxelID(voxelPos.y, voxelPos.x, voxelPos.z, currentID);
+        Coord3Int chunkCoord = new Coord3Int(chunkPos.y, chunkPos.x, chunkPos.z);
+        voxels.updateChunk(chunkCoord, voxelPos.y, voxelPos.x, voxelPos.z);
     }
 
     public void draw(Renderer renderer) {

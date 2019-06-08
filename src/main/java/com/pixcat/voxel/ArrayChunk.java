@@ -13,7 +13,7 @@ public class ArrayChunk implements Chunk {
 
     public ArrayChunk() {
         voxels = new byte[size][size][size];
-        dirtyFlag = true;
+        scheduleForRebuild();
     }
 
     @Override
@@ -33,6 +33,11 @@ public class ArrayChunk implements Chunk {
 
     public void setVoxelID(int y, int x, int z, byte ID) {
         voxels[x][y][z] = ID;
+        scheduleForRebuild();
+    }
+
+    @Override
+    public void scheduleForRebuild() {
         dirtyFlag = true;
     }
 

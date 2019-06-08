@@ -14,6 +14,8 @@ public interface SpatialStructure {
 
     void updateBlocks(double elapsedTime);
 
+    void updateChunk(Coord3Int chunkCoord, int voxelY, int voxelX, int voxelZ);
+
     Chunk getChunk(int y, int x, int z);
 
     void putChunk(int y, int x, int z, Chunk toPut);

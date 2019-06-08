@@ -18,6 +18,8 @@ public interface Chunk {
         return 16;
     }
 
+    void scheduleForRebuild();
+
     boolean needRebuild();
 
     void applyBuild(Mesher mesher, NeumannNeighborhood neighbors, Texture[] materials);
