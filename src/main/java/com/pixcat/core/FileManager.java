@@ -3,6 +3,7 @@ package com.pixcat.core;
 import com.pixcat.graphics.Texture;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class FileManager {
     private String rootDir;
 
     private FileManager() {
-        rootDir = "resources/";
+        rootDir = "resources" + File.separator;
     }
 
     public static FileManager getInstance() {
@@ -52,7 +53,7 @@ public class FileManager {
         int height;
         ByteBuffer buffer;
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            String filePath = System.getProperty("user.dir") + "/" + rootDir + fileName;
+            String filePath = System.getProperty("user.dir") + File.separator + rootDir + fileName;
             IntBuffer widthBuffer = stack.mallocInt(1);
             IntBuffer heightBuffer = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
