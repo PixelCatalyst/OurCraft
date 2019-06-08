@@ -12,16 +12,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class MenuGameState implements GameState {
     private World world;
-    private GUIFactory gui;
-    private FileManager fm;
-
     private Menu mainMenu;
     private StaticImage backgroundImg;
 
     public MenuGameState(World world) {
         this.world = world;
-        this.gui = GUIFactory.getInstance();
-        this.fm = FileManager.getInstance();
     }
 
     @Override
@@ -32,13 +27,14 @@ public class MenuGameState implements GameState {
         int windowWidth = renderer.getWindowWidth();
         int windowHeight = renderer.getWindowHeight();
 
+        backgroundImg.setSize(windowWidth, windowHeight);
+        renderer.draw(backgroundImg);
+
         mainMenu
                 .viewport(windowWidth, windowHeight)
                 .setPositionRel(0.0f, 0.3f)
                 .centerAll();
-
-        renderer.draw(backgroundImg.setSize(windowWidth, windowHeight));
-        renderer.draw(mainMenu.getGraphicsBatch());
+        mainMenu.draw(renderer);
     }
 
     @Override
@@ -55,14 +51,22 @@ public class MenuGameState implements GameState {
         return this;
     }
 
+    @Override
     public void onEnter(Renderer renderer) {
-        int windowWidth = renderer.getWindowWidth();
-        int windowHeight = renderer.getWindowHeight();
-
+        FileManager fm = FileManager.getInstance();
         mainMenu = new Menu()
+                .setSpacing(15)
                 .createButton("start", fm.loadTexture("start_button.png"))
                 .createButton("exit", fm.loadTexture("exit_button.png"));
 
+        int windowWidth = renderer.getWindowWidth();
+        int windowHeight = renderer.getWindowHeight();
+        GUIFactory gui = GUIFactory.getInstance();
         backgroundImg = gui.makeImage(fm.loadTexture("menu_background.png"), windowWidth, windowHeight);
+    }
+
+    @Override
+    public void onExit(Renderer renderer) {
+        mainMenu.cleanup();
     }
 }

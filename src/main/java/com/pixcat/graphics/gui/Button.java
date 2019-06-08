@@ -17,10 +17,10 @@ public class Button extends StaticImage {
     }
 
     public boolean wasClicked(MouseAction action) {
-        return wasTouched(action) && action.getEvent() == MouseAction.Event.RELEASE;
+        return wasTouched(action) && (action.getEvent() == MouseAction.Event.RELEASE);
     }
 
     public boolean wasClicked(MouseAction action, MouseAction.Button mouseButton) {
-        return wasClicked(action) && action.getButton() == mouseButton;
+        return wasClicked(action) && (action.getButton() == mouseButton);
     }
 }

@@ -38,16 +38,16 @@ public class GUIFactory {
     }
 
     public StaticImage makeImage(Texture texture, Integer width, Integer height) {
-        int objWidth = width != null ? width : texture.getWidth();
-        int objHeight = height != null ? height : texture.getHeight();
+        int objWidth = (width == null ? texture.getWidth() : width);
+        int objHeight = (height == null ? texture.getHeight() : height);
         StaticImage image = new StaticImage(modelMesh, objWidth, objHeight);
         image.setTexture(texture);
         return image;
     }
 
     public Button makeButton(Texture texture, Integer width, Integer height) {
-        int objWidth = width != null ? width : texture.getWidth();
-        int objHeight = height != null ? height : texture.getHeight();
+        int objWidth = (width == null ? texture.getWidth() : width);
+        int objHeight = (height == null ? texture.getHeight() : height);
         Button button = new Button(modelMesh, objWidth, objHeight);
         button.setTexture(texture);
         return button;

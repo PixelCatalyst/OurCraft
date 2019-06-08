@@ -3,6 +3,7 @@ package com.pixcat.graphics.gui;
 import com.pixcat.core.InputBuffer;
 import com.pixcat.core.MouseAction;
 import com.pixcat.graphics.GraphicBatch;
+import com.pixcat.graphics.Renderer;
 import com.pixcat.graphics.Texture;
 
 import java.util.HashMap;
@@ -14,22 +15,14 @@ public class Menu {
     private int viewportWidth;
     private int viewportHeight;
 
-    private int spacing = 10;
-    private int offsetTop = 0;
+    private int spacing;
+    private int offsetTop;
 
     private MouseAction mouseAction;
-
-    private GUIFactory gui;
 
     public Menu() {
         batch = new GraphicBatch();
         buttonIndex = new HashMap<>();
-        gui = GUIFactory.getInstance();
-    }
-
-    public Menu(int spacing) {
-        this();
-        this.spacing = spacing;
     }
 
     private Button getButtonByName(String name) {
@@ -37,6 +30,10 @@ public class Menu {
         return (Button) batch.getObject(buttonNo);
     }
 
+    public Menu setSpacing(int spacing) {
+        this.spacing = Math.max(spacing, 0);
+        return this;
+    }
 
     public Menu addButton(String name, Button button) {
         offsetTop += button.getHeight() + spacing;
@@ -46,6 +43,7 @@ public class Menu {
     }
 
     public Menu createButton(String name, Texture texture) {
+        GUIFactory gui = GUIFactory.getInstance();
         Button button = gui.makeButton(texture, null, null);
         button.setPosition(0, offsetTop);
         return addButton(name, button);
@@ -58,10 +56,10 @@ public class Menu {
     }
 
     public Menu setPositionRel(Float relX, Float relY) {
-        float relativeX = relX == null? (int) batch.getPosition().x : relX;
-        float relativeY = relY == null? (int) batch.getPosition().y : relY;
-        int left = (int)(relativeX * viewportWidth);
-        int top = (int)(relativeY * viewportHeight);
+        float relativeX = (relX == null ? (int) batch.getPosition().x : relX);
+        float relativeY = (relY == null ? (int) batch.getPosition().y : relY);
+        int left = (int) (relativeX * viewportWidth);
+        int top = (int) (relativeY * viewportHeight);
         batch.setPosition(left, top, 0.0f);
         return this;
     }
@@ -71,9 +69,9 @@ public class Menu {
         while (batch.hasNext()) {
             Button button = (Button) batch.getObject();
             button
-                .viewport(viewportWidth, viewportHeight)
-                .setPositionRel(0.5f, null)
-                .selfCenterX();
+                    .viewport(viewportWidth, viewportHeight)
+                    .setPositionRel(0.5f, null)
+                    .selfCenterX();
 
             batch.next();
         }
@@ -90,7 +88,11 @@ public class Menu {
         return getButtonByName(buttonName).wasClicked(mouseAction, MouseAction.Button.LEFT);
     }
 
-    public GraphicBatch getGraphicsBatch() {
-        return batch;
+    public void draw(Renderer renderer) {
+        renderer.draw(batch);
+    }
+
+    public void cleanup() {
+        batch.cleanup();
     }
 }
