@@ -16,12 +16,13 @@ public class InputBuffer {
     private static class KeyCallback extends GLFWKeyCallback {
         Map<Integer, Boolean> stateBuffer;
 
-        public void clearBuffer() {
+        KeyCallback() {
             stateBuffer = new HashMap<>();
         }
 
-        KeyCallback() {
-            clearBuffer();
+        void clearBuffer() {
+            if (stateBuffer != null)
+                stateBuffer.clear();
         }
 
         @Override
