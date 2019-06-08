@@ -45,6 +45,8 @@ public class MenuGameState implements GameState {
         mainMenu.updateInput(input);
         if (mainMenu.buttonWasClicked("start"))
             return new PlayGameState(world);
+        if (mainMenu.buttonWasClicked("continue"))
+            return new PlayGameState(world); //TODO load saved world
         if (mainMenu.buttonWasClicked("exit"))
             return null;
 
@@ -57,6 +59,7 @@ public class MenuGameState implements GameState {
         mainMenu = new Menu()
                 .setSpacing(15)
                 .createButton("start", fm.loadTexture("start_button.png"))
+                .createButton("continue", fm.loadTexture("continue_button.png"))
                 .createButton("exit", fm.loadTexture("exit_button.png"));
 
         int windowWidth = renderer.getWindowWidth();
