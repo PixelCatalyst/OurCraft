@@ -169,6 +169,9 @@ public class TerrainGenerator {
         double ny = delta * y;
         double riverbed = ridgedNoise(nx, ny);
         riverbed = riverSmooth(Math.pow(riverbed, 4.5)) - (grass * grass * 0.32);
+        double spawnDistance = Math.sqrt(x * x + y * y);
+        if (spawnDistance < 20.0)
+            riverbed /= (21.0 - spawnDistance);
         if (riverbed < 0.0)
             riverbed = 0.0;
         return riverbed;
