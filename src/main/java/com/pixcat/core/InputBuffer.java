@@ -112,6 +112,14 @@ public class InputBuffer {
         return isDown;
     }
 
+    public boolean isAnyKeyboardKeyDown() {
+        for (Map.Entry<Integer, Boolean> keyEntry : keyCallback.stateBuffer.entrySet()) {
+            if (keyEntry.getValue())
+                return true;
+        }
+        return false;
+    }
+
     public void setMouseLocked() {
         mouseCallback.lockCursor();
     }
@@ -138,6 +146,10 @@ public class InputBuffer {
 
     public boolean pendingMouseAction() {
         return !mouseCallback.actionQueue.isEmpty();
+    }
+
+    public void flushMouseActions() {
+        mouseCallback.actionQueue.clear();
     }
 
     public double getScrollOffset() {

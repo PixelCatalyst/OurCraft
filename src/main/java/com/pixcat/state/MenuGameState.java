@@ -32,7 +32,7 @@ public class MenuGameState implements GameState {
 
         mainMenu
                 .viewport(windowWidth, windowHeight)
-                .setPositionRel(0.0f, 0.3f)
+                .setPositionRel(0.0f, 0.35f)
                 .centerAll();
         mainMenu.draw(renderer);
     }
@@ -44,7 +44,7 @@ public class MenuGameState implements GameState {
 
         mainMenu.updateInput(input);
         if (mainMenu.buttonWasClicked("start"))
-            return new PlayGameState(world);
+            return new StartGameState(world);
         if (mainMenu.buttonWasClicked("continue"))
             return new PlayGameState(world); //TODO load saved world
         if (mainMenu.buttonWasClicked("exit"))

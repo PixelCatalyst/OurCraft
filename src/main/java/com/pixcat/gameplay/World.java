@@ -77,7 +77,7 @@ public class World implements Subject {
 
     public void beginGeneration(String seed) {
         final int heightInChunks = voxels.getHeight();
-        terrainGen = new TerrainGenerator(2123, heightInChunks);
+        terrainGen = new TerrainGenerator(seed.hashCode(), heightInChunks);
         int diameter = voxels.getDiameter();
         int planeMin = -(diameter / 2);
         int planeMax = (diameter / 2);
