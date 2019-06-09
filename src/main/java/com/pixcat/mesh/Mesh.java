@@ -13,6 +13,7 @@ public class Mesh {
     private final int texCoordVboID;
     private final int indexVboID;
     private final int vertexCount;
+    private int referenceCount;
 
     public Mesh(float[] positions, float[] texCoords, int[] indices) {
         FloatBuffer vertexBuffer = null;
@@ -59,6 +60,10 @@ public class Mesh {
         return vboID;
     }
 
+    public void addReference() {
+        ++referenceCount;
+    }
+
     public int getVaoID() {
         return vaoID;
     }
@@ -68,8 +73,12 @@ public class Mesh {
     }
 
     public void cleanup() {
-        deleteVBO();
-        deleteVAO();
+        if (referenceCount > 0)
+            --referenceCount;
+        if (referenceCount == 0) {
+            deleteVBO();
+            deleteVAO();
+        }
     }
 
     private void deleteVBO() {

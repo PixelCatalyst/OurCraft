@@ -2,6 +2,7 @@ package com.pixcat.core;
 
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
+import com.pixcat.graphics.gui.GUIFactory;
 import com.pixcat.state.GameState;
 import com.pixcat.state.MenuGameState;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -78,6 +79,7 @@ public class Game {
     }
 
     private void shutdown() {
+        GUIFactory.getInstance().cleanup();
         renderer.destroyWindow();
         renderer.cleanup();
         shutdownGLFW();

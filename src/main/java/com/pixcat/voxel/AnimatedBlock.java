@@ -19,11 +19,11 @@ public class AnimatedBlock extends SolidBlock {
         return accumulatedTime;
     }
 
-    public ArrayList getFrameArray(){
+    public ArrayList getFrameArray() {
         return frames;
     }
 
-    public double getSecondsPerFrame(){
+    public double getSecondsPerFrame() {
         return secondsPerFrame;
     }
 
@@ -38,6 +38,7 @@ public class AnimatedBlock extends SolidBlock {
 
     public void addFrame(Texture frameTexture) {
         frames.add(frameTexture);
+        frameTexture.addReference();
     }
 
     public void update(double elapsedTime) { //prob need to add more textures with that addFrame()
@@ -48,5 +49,12 @@ public class AnimatedBlock extends SolidBlock {
             currentFrameIndex = (currentFrameIndex + frameDelta) % frames.size();
             texture = frames.get(currentFrameIndex);
         }
+    }
+
+    public void cleanup() {
+        for (Texture tex : frames)
+            tex.cleanup();
+        frames.clear();
+        currentFrameIndex = 0;
     }
 }

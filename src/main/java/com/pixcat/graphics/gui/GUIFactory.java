@@ -25,6 +25,7 @@ public class GUIFactory {
                 0, 1, 3, 3, 1, 2,
         };
         modelMesh = new Mesh(positions, texCoords, indices);
+        modelMesh.addReference();
     }
 
     public static GUIFactory getInstance() {
@@ -51,5 +52,10 @@ public class GUIFactory {
         Button button = new Button(modelMesh, objWidth, objHeight);
         button.setTexture(texture);
         return button;
+    }
+
+    public void cleanup() {
+        if (modelMesh != null)
+            modelMesh.cleanup();
     }
 }

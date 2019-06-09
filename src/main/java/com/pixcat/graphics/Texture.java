@@ -8,8 +8,9 @@ public class Texture {
     private int ID;
     private int height;
     private int width;
+    private int referenceCount;
 
-    public Texture(int ID, int width, int height) {
+    private Texture(int ID, int width, int height) {
         this.ID = ID;
         this.width = width;
         this.height = height;
@@ -26,6 +27,10 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         return new Texture(textureID, width, height);
+    }
+
+    public void addReference() {
+        ++referenceCount;
     }
 
     public int getWidth() {
@@ -56,7 +61,11 @@ public class Texture {
     }
 
     public void cleanup() {
-        glDeleteTextures(ID);
-        ID = 0;
+        if (referenceCount > 0)
+            --referenceCount;
+        if (referenceCount == 0) {
+            glDeleteTextures(ID);
+            ID = 0;
+        }
     }
 }

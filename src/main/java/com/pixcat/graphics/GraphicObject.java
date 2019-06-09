@@ -15,6 +15,7 @@ public class GraphicObject {
         this.mesh = mesh;
         if (mesh == null)
             throw new IllegalArgumentException("Graphic object can not have null mesh");
+        mesh.addReference();
         position = new Vector3f(0.0f, 0.0f, 0.0f);
         scale = 1.0f;
         worldMatrix = new Matrix4f();
@@ -29,7 +30,11 @@ public class GraphicObject {
     }
 
     public void setTexture(Texture texture) {
+        if (this.texture != null)
+            this.texture.cleanup();
         this.texture = texture;
+        if (texture != null)
+            texture.addReference();
     }
 
     public int compareTextures(GraphicObject other) {
@@ -58,8 +63,11 @@ public class GraphicObject {
     }
 
     public void cleanup() {
-        mesh.cleanup();
+        if (mesh != null)
+            mesh.cleanup();
         mesh = null;
+        if (texture != null)
+            texture.cleanup();
         texture = null;
         position = null;
         worldMatrix = null;

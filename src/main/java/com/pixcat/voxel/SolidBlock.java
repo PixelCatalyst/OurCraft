@@ -16,6 +16,7 @@ public class SolidBlock implements Block {
         if (texture == null)
             throw new IllegalArgumentException("Block must have non null texture");
         this.texture = texture;
+        texture.addReference();
         if (name == null)
             this.name = "unknown";
         else
@@ -49,5 +50,9 @@ public class SolidBlock implements Block {
     @Override
     public int hashCode() {
         return Objects.hash(ID);
+    }
+
+    public void cleanup() {
+        texture.cleanup();
     }
 }

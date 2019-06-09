@@ -71,5 +71,6 @@ public class MenuGameState implements GameState {
     @Override
     public void onExit(Renderer renderer) {
         mainMenu.cleanup();
+        backgroundImg.cleanup();
     }
 }
