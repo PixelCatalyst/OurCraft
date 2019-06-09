@@ -88,6 +88,8 @@ public class PlayGameState implements GameState {
 
         world.updateBlockCursor(input.getMouseAction());
 
+        if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
+            return new PauseGameState(world, this);
         return this;
     }
 
@@ -102,10 +104,6 @@ public class PlayGameState implements GameState {
     public void onEnter(Renderer renderer) {
         isEntering = true;
 
-        //TODO temp, should be in StartState
-        String testSeed = "ra";
-        world.beginGeneration(testSeed);
-        //
         testCam = world.getPlayerCamera();
     }
 
