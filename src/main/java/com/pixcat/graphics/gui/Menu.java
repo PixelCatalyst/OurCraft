@@ -20,12 +20,29 @@ public class Menu {
 
     private MouseAction mouseAction;
 
+    public int getSpacing() {
+        return spacing;
+    }
+
     public Menu() {
         batch = new GraphicBatch();
         buttonIndex = new HashMap<>();
     }
 
-    private Button getButtonByName(String name) {
+    public int getViewportWidth() {
+        return viewportWidth;
+    }
+
+    public int getViewportHeight() {
+        return viewportHeight;
+    }
+
+    public GraphicBatch getBatch() {
+        return batch;
+    }
+
+    //changed to public to make testing easier, might need to change back if not working properly
+    public Button getButtonByName(String name) {
         int buttonNo = buttonIndex.get(name);
         return (Button) batch.getObject(buttonNo);
     }
