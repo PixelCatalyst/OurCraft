@@ -52,11 +52,11 @@ public class TerrainGenerator {
         for (int i = 0; i < heightInChunks; ++i)
             column[i] = new ArrayChunk();
 
-        for (int cx = x; cx < (x + Chunk.getSize()); ++cx) {
-            for (int cz = z; cz < (z + Chunk.getSize()); ++cz) {
-                int xRelative = cx - x;
-                int zRelative = cz - z;
-                int groundHeight = getHeightAt(cx, cz);
+        for (int chunkX = x; chunkX < (x + Chunk.getSize()); ++chunkX) {
+            for (int chunkZ = z; chunkZ < (z + Chunk.getSize()); ++chunkZ) {
+                int xRelative = chunkX - x;
+                int zRelative = chunkZ - z;
+                int groundHeight = getHeightAt(chunkX, chunkZ);
                 int waterHeight = 0;
                 if (groundHeight < 53)
                     waterHeight = 53 - groundHeight;
@@ -79,10 +79,10 @@ public class TerrainGenerator {
                 }
 
                 int maxIndex = Chunk.getSize() - 1;
-                boolean isTree = false;
+                boolean treePresent = false;
                 if ((xRelative > 0) && (xRelative < maxIndex) && (zRelative > 0) && (zRelative < maxIndex))
-                    isTree = isTreeAt(cx, cz);
-                if (isTree)
+                    treePresent = isTreeAt(chunkX, chunkZ);
+                if (treePresent)
                     createTree(column, groundHeight, xRelative, zRelative);
             }
         }
@@ -186,8 +186,8 @@ public class TerrainGenerator {
         return 1.846 * (0.5 - Math.abs(0.5 - value));
     }
 
-    private double riverSmooth(double val) {
-        return -2.0 * (val - 0.4) * (val - 1.54);
+    private double riverSmooth(double riverbed) {
+        return -2.0 * (riverbed - 0.4) * (riverbed - 1.54);
     }
 
     private double treePattern(int x, int y, double elevation) {
