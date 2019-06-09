@@ -81,6 +81,10 @@ public class Mesh {
         }
     }
 
+    public int getReferenceCount() {
+        return referenceCount;
+    }
+
     private void deleteVBO() {
         glDisableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
