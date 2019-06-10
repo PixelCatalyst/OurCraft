@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static org.lwjgl.opengl.GL33.*;
 
 public class ShaderProgram {
-    private final int programID;
+    private int programID;
     private int vertexShaderID;
     private int fragmentShaderID;
 
@@ -42,6 +42,14 @@ public class ShaderProgram {
             throw new IllegalStateException("Error compiling shader code: " + getCurrentInfoLog());
         glAttachShader(programID, shaderID);
         return shaderID;
+    }
+
+    public int getVertexShaderID() {
+        return vertexShaderID;
+    }
+
+    public int getFragmentShaderID() {
+        return fragmentShaderID;
     }
 
     public void link() {
@@ -103,7 +111,9 @@ public class ShaderProgram {
 
     public void cleanup() {
         unbind();
-        if (programID != 0)
+        if (programID != 0) {
             glDeleteProgram(programID);
+            programID = 0;
+        }
     }
 }
