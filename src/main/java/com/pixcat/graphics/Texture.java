@@ -29,6 +29,10 @@ public class Texture {
         return new Texture(textureID, width, height);
     }
 
+    public int getReferenceCount() {
+        return referenceCount;
+    }
+
     public void addReference() {
         ++referenceCount;
     }

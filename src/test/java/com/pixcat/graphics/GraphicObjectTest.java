@@ -48,7 +48,7 @@ public class GraphicObjectTest {
         Texture testTexture = FileManager.getInstance().loadTexture("dirt.png");
         testObject.setTexture(testTexture);
 
-//        assertEquals(1, testTexture.getReferenceCount());
+        assertEquals(1, testTexture.getReferenceCount());
         assertEquals(testTexture, testObject.getTexture());
     }
 
