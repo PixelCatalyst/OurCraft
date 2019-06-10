@@ -5,7 +5,7 @@ import com.pixcat.gameplay.Achievements;
 import com.pixcat.gameplay.Camera;
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
-import org.joml.Vector2d;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -17,8 +17,8 @@ public class PlayGameState implements GameState {
     InputBuffer exitingInput;
 
     private Camera testCam; //TODO temporary
-    private float lastT;
-    private Vector2d lastMouse;
+    private float lastTimeStep;
+    private Vector2f lastMousePosition;
 
     public PlayGameState(World world) {
         this.world = world;
@@ -34,12 +34,9 @@ public class PlayGameState implements GameState {
         Vector3f skyColor = world.getSkyColor();
         renderer.setBackgroundColor(skyColor.x, skyColor.y, skyColor.z);
 
-        //TODO render world
-        //renderer.setPerspective(world.getPlayerCamera());
-        renderer.setPerspective(testCam);
+        renderer.setPerspective(world.getPlayerCamera());
         world.drawChunks(renderer);
 
-        //TODO render player-HUD
         renderer.setOrthographic();
         world.drawStatusBar(renderer);
 
@@ -48,44 +45,22 @@ public class PlayGameState implements GameState {
 
     @Override
     public GameState handleInput(InputBuffer input) {
-        if (isEntering)
+        if (isEntering) {
+            isEntering = false;
             input.setMouseLocked();
-
-        if (lastMouse == null) {
-            lastMouse = new Vector2d(input.getMouseX(), input.getMouseY());
-        } else {
-            Vector2d currMouse = new Vector2d(input.getMouseX(), input.getMouseY());
-            double deltaX = lastMouse.x - currMouse.x;
-            double deltaY = lastMouse.y - currMouse.y;
-            lastMouse = currMouse;
-            final double norm = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            final double turnSpeed = 240.0f;
-            if (norm > 0.0) {
-                deltaX = (deltaX / norm) * turnSpeed * Math.min(lastT, 0.05);
-                deltaY = (deltaY / norm) * turnSpeed * Math.min(lastT, 0.05);
-            }
-            testCam.moveRotation((float) -deltaY, (float) -deltaX, 0);
         }
 
-        //TODO temporary
-        final float moveSpeed = 4.5f;
-        if (input.isKeyboardKeyDown(GLFW_KEY_W))
-            testCam.movePosition(0, 0, -moveSpeed * lastT);
-        if (input.isKeyboardKeyDown(GLFW_KEY_S))
-            testCam.movePosition(0, 0, moveSpeed * lastT);
-
-        if (input.isKeyboardKeyDown(GLFW_KEY_A))
-            testCam.movePosition(-moveSpeed * lastT, 0, 0);
-        if (input.isKeyboardKeyDown(GLFW_KEY_D))
-            testCam.movePosition(moveSpeed * lastT, 0, 0);
-
-        if (input.isKeyboardKeyDown(GLFW_KEY_R))
-            testCam.movePosition(0, moveSpeed * lastT, 0);
-        if (input.isKeyboardKeyDown(GLFW_KEY_F))
-            testCam.movePosition(0, -moveSpeed * lastT, 0);
-        exitingInput = input;
-
+        if (lastMousePosition == null) {
+            lastMousePosition = new Vector2f((float) input.getMouseX(), (float) input.getMouseY());
+        } else {
+            Vector2f currentMousePosition = new Vector2f((float) input.getMouseX(), (float) input.getMouseY());
+            lastMousePosition.sub(currentMousePosition);
+            world.rotatePlayer(-lastMousePosition.x, -lastMousePosition.y, lastTimeStep);
+            lastMousePosition = currentMousePosition;
+        }
+        world.movePlayer(input, lastTimeStep);
         world.updateBlockCursor(input.getMouseAction(), input.getScrollOffset());
+        exitingInput = input;
 
         if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
             return new PauseGameState(world, this);
@@ -96,7 +71,7 @@ public class PlayGameState implements GameState {
     public void update(double elapsedTime) {
         world.addGameTime(elapsedTime);
         world.updateChunks();
-        lastT = (float) elapsedTime;
+        lastTimeStep = (float) elapsedTime;
     }
 
     @Override

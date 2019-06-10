@@ -1,6 +1,7 @@
 package com.pixcat.gameplay;
 
 import com.pixcat.core.FileManager;
+import com.pixcat.core.InputBuffer;
 import com.pixcat.core.MouseAction;
 import com.pixcat.graphics.Renderer;
 import com.pixcat.graphics.Texture;
@@ -8,15 +9,17 @@ import com.pixcat.mesh.GreedyMesher;
 import com.pixcat.mesh.Mesher;
 import com.pixcat.noisegen.TerrainGenerator;
 import com.pixcat.voxel.*;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
-import org.joml.Vector4i;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class World implements Subject {
     private Camera playerCamera;
+    private final float playerHeight;
     private Metrics playerMetrics;
     private TerrainGenerator terrainGen;
     private SpatialStructure voxels;
@@ -30,6 +33,7 @@ public class World implements Subject {
 
     public World() {
         playerCamera = new Camera(0, 0, 0);
+        playerHeight = 1.7f;
         playerMetrics = new Metrics();
         voxels = new VirtualArray(5);
         setupBlocks();
@@ -100,17 +104,104 @@ public class World implements Subject {
     }
 
     private void initPlayerPosition(int height) {
-        Vector3f playerPos = new Vector3f(1.5f, (float) height + 1.7f, 1.5f);
+        Vector3f playerPos = new Vector3f(1.5f, (float) height + playerHeight, 1.5f);
         playerCamera.setPosition(playerPos.x, playerPos.y, playerPos.z);
         playerChunkColumn = new Vector2i(
                 (int) Math.ceil(playerPos.x) / Chunk.getSize(),
                 (int) Math.ceil(playerPos.z) / Chunk.getSize());
     }
 
+    public void rotatePlayer(float deltaX, float deltaY, float timeStep) {
+        final float length = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        final float maxLength = 50.0f;
+        if (length > maxLength) {
+            deltaX = deltaX * (maxLength / length);
+            deltaY = deltaY * (maxLength / length);
+        }
+        final float turnSpeed = 60.0f;
+        final float maxFrameTime = 1.0f / 15.0f;
+        float deltaAxisX = deltaY * turnSpeed * Math.min(timeStep, maxFrameTime);
+        float deltaAxisY = deltaX * turnSpeed * Math.min(timeStep, maxFrameTime);
+        playerCamera.moveRotation(deltaAxisX, deltaAxisY, 0.0f);
+    }
+
+    public void movePlayer(InputBuffer input, float timeStep) {
+        final float moveSpeed = 4.5f;
+        final float maxFrameTime = 1.0f / 15.0f;
+        timeStep = Math.min(timeStep, maxFrameTime);
+        Vector3f originalPosition = playerCamera.getPosition();
+        if (input.isKeyboardKeyDown(GLFW_KEY_W))
+            playerCamera.movePosition(0, 0, -moveSpeed * timeStep);
+        if (input.isKeyboardKeyDown(GLFW_KEY_S))
+            playerCamera.movePosition(0, 0, moveSpeed * timeStep);
+
+        if (input.isKeyboardKeyDown(GLFW_KEY_A))
+            playerCamera.movePosition(-moveSpeed * timeStep, 0, 0);
+        if (input.isKeyboardKeyDown(GLFW_KEY_D))
+            playerCamera.movePosition(moveSpeed * timeStep, 0, 0);
+
+        if (input.isKeyboardKeyDown(GLFW_KEY_R))
+            playerCamera.movePosition(0, moveSpeed * timeStep, 0);
+        if (input.isKeyboardKeyDown(GLFW_KEY_F))
+            playerCamera.movePosition(0, -moveSpeed * timeStep, 0);
+
+        handleCollisions(originalPosition);
+    }
+
+    private void handleCollisions(Vector3f originalPosition) {
+        Vector3f playerPosition = playerCamera.getPosition();
+        boolean xCollision = isCollisionAt(new Vector3f(playerPosition.x, originalPosition.y, originalPosition.z));
+        boolean yCollision = isCollisionAt(new Vector3f(originalPosition.x, playerPosition.y, originalPosition.z));
+        boolean zCollision = isCollisionAt(new Vector3f(originalPosition.x, originalPosition.y, playerPosition.z));
+        playerCamera.setPosition(
+                (xCollision ? originalPosition.x : playerPosition.x),
+                (yCollision ? originalPosition.y : playerPosition.y),
+                (zCollision ? originalPosition.z : playerPosition.z));
+
+        Vector3f positionChange = playerCamera.getPosition()
+                .sub(originalPosition)
+                .absolute();
+        //TODO positionChange -> achievements
+    }
+
+    private boolean isCollisionAt(Vector3f playerPosition) {
+        Vector3i headPos = quantizeToVoxelSpace(playerPosition);
+        playerPosition.y -= playerHeight;
+        Vector3i legsPos = quantizeToVoxelSpace(playerPosition);
+        final int chunkSize = Chunk.getSize();
+        while (headPos.y >= legsPos.y) {
+            Chunk currentChunk = voxels.getChunk(
+                    (headPos.y >= 0 ? headPos.y / chunkSize : (headPos.y - chunkSize + 1) / chunkSize),
+                    (headPos.x >= 0 ? headPos.x / chunkSize : (headPos.x - chunkSize + 1) / chunkSize),
+                    (headPos.z >= 0 ? headPos.z / chunkSize : (headPos.z - chunkSize + 1) / chunkSize));
+            if (currentChunk != null) {
+                byte currentID = currentChunk.getVoxelID(
+                        Math.floorMod(headPos.y, chunkSize),
+                        Math.floorMod(headPos.x, chunkSize),
+                        Math.floorMod(headPos.z, chunkSize));
+                if (currentID != 0)
+                    return true;
+            }
+            headPos.y -= 1;
+        }
+        return false;
+    }
+
+    private Vector3i quantizeToVoxelSpace(Vector3f position) {
+        return new Vector3i(
+                (position.x < 0.0f ? (int) Math.floor(position.x) : (int) (position.x)),
+                (position.y < 0.0f ? (int) Math.floor(position.y) : (int) (position.y)),
+                (position.z < 0.0f ? (int) Math.floor(position.z) : (int) (position.z)));
+    }
+
     public void updateChunks() {
         Vector3f playerPos = playerCamera.getPosition();
-        double roundedX = (playerPos.x > 0.0 ? Math.ceil(playerPos.x) : Math.floor(playerPos.x) - (double) Chunk.getSize());
-        double roundedZ = (playerPos.z > 0.0 ? Math.ceil(playerPos.z) : Math.floor(playerPos.z) - (double) Chunk.getSize());
+        double roundedX = (playerPos.x > 0.0 ?
+                Math.ceil(playerPos.x) :
+                Math.floor(playerPos.x) - (double) Chunk.getSize());
+        double roundedZ = (playerPos.z > 0.0 ?
+                Math.ceil(playerPos.z) :
+                Math.floor(playerPos.z) - (double) Chunk.getSize());
         Vector2i chunkPos = new Vector2i((int) roundedX / Chunk.getSize(), (int) roundedZ / Chunk.getSize());
         Vector2i chunkDiff = new Vector2i(chunkPos).sub(playerChunkColumn);
         playerChunkColumn = chunkPos;

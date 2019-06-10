@@ -21,7 +21,7 @@ public class Camera {
 
     public Camera(float x, float y, float z) {
         fieldOfView = (float) Math.toRadians(60.0);
-        nearClippingDist = 0.01f;
+        nearClippingDist = 0.001f;
         farClippingDist = 1000.0f;
         maxAngle = 90.0f;
 
