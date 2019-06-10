@@ -26,6 +26,9 @@ public class World implements Subject {
     private BlockCursor blockCursor;
     private Mesher mesher;
 
+    private float velocity;
+    private boolean jumping;
+
     private Vector2i playerChunkColumn;
     private Vector4i chunkArea;
 
@@ -126,10 +129,15 @@ public class World implements Subject {
     }
 
     public void movePlayer(InputBuffer input, float timeStep) {
-        final float moveSpeed = 4.5f;
+        final float moveSpeed = 3.2f;
+        final float jumpSpeed = 6.0f;
         final float maxFrameTime = 1.0f / 15.0f;
         timeStep = Math.min(timeStep, maxFrameTime);
         Vector3f originalPosition = playerCamera.getPosition();
+        float gravity = -0.2f * timeStep;
+        velocity += gravity;
+        playerCamera.movePosition(0.0f, velocity, 0.0f);
+
         if (input.isKeyboardKeyDown(GLFW_KEY_W))
             playerCamera.movePosition(0, 0, -moveSpeed * timeStep);
         if (input.isKeyboardKeyDown(GLFW_KEY_S))
@@ -140,10 +148,10 @@ public class World implements Subject {
         if (input.isKeyboardKeyDown(GLFW_KEY_D))
             playerCamera.movePosition(moveSpeed * timeStep, 0, 0);
 
-        if (input.isKeyboardKeyDown(GLFW_KEY_R))
-            playerCamera.movePosition(0, moveSpeed * timeStep, 0);
-        if (input.isKeyboardKeyDown(GLFW_KEY_F))
-            playerCamera.movePosition(0, -moveSpeed * timeStep, 0);
+        if (input.isKeyboardKeyDown(GLFW_KEY_SPACE) || jumping) {
+            playerCamera.movePosition(0, jumpSpeed * timeStep, 0);
+            jumping = true;
+        }
 
         handleCollisions(originalPosition);
     }
@@ -157,6 +165,12 @@ public class World implements Subject {
                 (xCollision ? originalPosition.x : playerPosition.x),
                 (yCollision ? originalPosition.y : playerPosition.y),
                 (zCollision ? originalPosition.z : playerPosition.z));
+
+        if (yCollision && (playerPosition.y < originalPosition.y)) {
+            velocity = 0.0f;
+            jumping = false;
+        } else if (yCollision)
+            velocity -= (playerPosition.y - originalPosition.y);
 
         Vector3f positionChange = playerCamera.getPosition()
                 .sub(originalPosition)
