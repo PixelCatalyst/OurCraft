@@ -3,6 +3,7 @@ package com.pixcat.graphics;
 import com.pixcat.mesh.Mesh;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +26,12 @@ public class GraphicBatchTest {
         placeholderWindow.bindAsCurrent();
         placeholderMesh = new Mesh(new float[6], new float[4], new int[10]);
     }
+
+    @After
+    public void destroyWindow() {
+        placeholderWindow.destroy();
+    }
+
 
     @Test
     public void testEmptySize() {
