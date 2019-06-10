@@ -40,9 +40,21 @@ public class VirtualArray implements SpatialStructure {
     }
 
     @Override
+    public byte getTypeID(int index) {
+        byte typeID = 0;
+        if ((index >= 0) && (index < getTypeCount())) {
+            Iterator<Block> it = voxelTypes.iterator();
+            for (int i = 0; i <= index; ++i)
+                typeID = it.next().getID();
+        }
+        return typeID;
+    }
+
+    @Override
     public int getTypeCount() {
         return voxelTypes.size();
     }
+
 
     @Override
     public void updateBlocks(double elapsedTime) {

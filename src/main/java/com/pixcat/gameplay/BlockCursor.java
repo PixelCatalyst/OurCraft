@@ -1,8 +1,12 @@
 package com.pixcat.gameplay;
 
+import com.pixcat.core.FileManager;
 import com.pixcat.graphics.GraphicObject;
 import com.pixcat.graphics.Renderer;
+import com.pixcat.graphics.gui.GUIFactory;
+import com.pixcat.graphics.gui.StaticImage;
 import com.pixcat.mesh.Mesh;
+import com.pixcat.voxel.Block;
 import com.pixcat.voxel.Chunk;
 import com.pixcat.voxel.Coord3Int;
 import com.pixcat.voxel.SpatialStructure;
@@ -17,7 +21,17 @@ public class BlockCursor {
     private Vector3i previousChunkPos;
     private Vector3i previousVoxelPos;
     private boolean traversedEmpty;
+
     private GraphicObject indicationBox;
+    private StaticImage crosshair;
+    private StaticImage materialImg;
+    private StaticImage selectionImg;
+    private StaticImage borderImg;
+    private final int tileSize = 72;
+    private final int borderSize = 2;
+
+    private byte pickedID;
+    private int typeIndex;
 
     public BlockCursor() {
         maxRayLength = 6;
@@ -26,6 +40,8 @@ public class BlockCursor {
         previousChunkPos = new Vector3i(0, 0, 0);
         previousVoxelPos = new Vector3i(0, 0, 0);
         createIndicationBox();
+        createCrosshair();
+        createMaterialBarImages();
     }
 
     private void createIndicationBox() {
@@ -56,6 +72,26 @@ public class BlockCursor {
         };
         Mesh boxMesh = new Mesh(boxPositions, boxTexCoords, boxIndices);
         indicationBox = new GraphicObject(boxMesh);
+    }
+
+    private void createCrosshair() {
+        GUIFactory gui = GUIFactory.getInstance();
+        FileManager fm = FileManager.getInstance();
+        crosshair = gui.makeImage(fm.loadTexture("crosshair.png"), null, null);
+    }
+
+    private void createMaterialBarImages() {
+        GUIFactory gui = GUIFactory.getInstance();
+        FileManager fm = FileManager.getInstance();
+        materialImg = gui.makeImage(null, tileSize, tileSize);
+        selectionImg = gui.makeImage(fm.loadTexture("selection.png"), tileSize, null);
+        borderImg = gui.makeImage(fm.loadTexture("border.png"), null, null);
+    }
+
+
+    public void scrollType(int scrollOffset, SpatialStructure voxels) {
+        typeIndex = Math.floorMod(typeIndex + scrollOffset, voxels.getTypeCount());
+        pickedID = voxels.getTypeID(typeIndex);
     }
 
     public void castRay(Vector3f startPos, Vector3f cameraDir, SpatialStructure voxels) {
@@ -148,7 +184,7 @@ public class BlockCursor {
 
     public void placeNewBlock(SpatialStructure voxels) {
         if ((voxels != null) && (currentID != 0) && traversedEmpty) {
-            currentID = 1; //TODO material change
+            currentID = pickedID;
             traversedEmpty = false;
             handleChunkUpdate(voxels, previousChunkPos, previousVoxelPos);
         }
@@ -169,5 +205,45 @@ public class BlockCursor {
                     currentChunkPos.z * Chunk.getSize() + currentVoxelPos.z);
             renderer.drawWireframe(indicationBox);
         }
+    }
+
+    public void drawCrosshair(Renderer renderer) {
+        crosshair.viewport(renderer.getWindowWidth(), renderer.getWindowHeight());
+        crosshair.setPositionRel(0.5f, 0.5f);
+        crosshair.selfCenter();
+        renderer.draw(crosshair);
+    }
+
+    public void drawMaterialBar(Renderer renderer, SpatialStructure voxels) {
+        int windowWidth = renderer.getWindowWidth();
+        int windowHeight = renderer.getWindowHeight();
+        int barWidth = voxels.getTypeCount() * tileSize;
+        int offsetX = (windowWidth - barWidth) / 2;
+
+        borderImg.setSize(barWidth + 2 * borderSize, tileSize + borderSize);
+        borderImg.setPosition(offsetX - borderSize, windowHeight - tileSize - borderSize);
+        renderer.draw(borderImg);
+        for (int i = 0; i < voxels.getTypeCount(); ++i) {
+            byte typeID = voxels.getTypeID(i);
+            Block blockType = voxels.getVoxelFromID(typeID);
+            materialImg.setTexture(blockType.getTexture());
+            materialImg.setPosition(offsetX, windowHeight - tileSize, 0.0f);
+            renderer.draw(materialImg);
+            if (i == typeIndex) {
+                selectionImg.setPosition(offsetX, windowHeight - tileSize - borderSize - selectionImg.getHeight());
+                renderer.draw(selectionImg);
+            }
+
+            offsetX += tileSize;
+        }
+    }
+
+    public void cleanup() {
+        indicationBox.cleanup();
+        crosshair.cleanup();
+        materialImg.cleanup();
+        selectionImg.cleanup();
+        borderImg.cleanup();
+        currentID = 0;
     }
 }

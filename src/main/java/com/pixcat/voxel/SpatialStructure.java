@@ -10,6 +10,8 @@ public interface SpatialStructure {
 
     Block getVoxelFromID(byte ID);
 
+    byte getTypeID(int index);
+
     int getTypeCount();
 
     void updateBlocks(double elapsedTime);

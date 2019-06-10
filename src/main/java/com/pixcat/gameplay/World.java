@@ -197,7 +197,8 @@ public class World implements Subject {
         return playerCamera;
     }
 
-    public void updateBlockCursor(MouseAction mouseAction) {
+    public void updateBlockCursor(MouseAction mouseAction, double scrollOffset) {
+        blockCursor.scrollType((int) scrollOffset, voxels);
         Vector3f position = playerCamera.getPosition();
         Vector3f direction = playerCamera.getDirection();
         blockCursor.castRay(position, direction, voxels);
@@ -230,6 +231,7 @@ public class World implements Subject {
     }
 
     public void drawStatusBar(Renderer renderer) {
-        //TODO
+        blockCursor.drawCrosshair(renderer);
+        blockCursor.drawMaterialBar(renderer, voxels);
     }
 }

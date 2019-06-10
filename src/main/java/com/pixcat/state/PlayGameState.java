@@ -1,15 +1,14 @@
 package com.pixcat.state;
 
+import com.pixcat.core.InputBuffer;
 import com.pixcat.gameplay.Achievements;
 import com.pixcat.gameplay.Camera;
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
-import com.pixcat.core.InputBuffer;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 
 public class PlayGameState implements GameState {
     private World world;
@@ -86,7 +85,7 @@ public class PlayGameState implements GameState {
             testCam.movePosition(0, -moveSpeed * lastT, 0);
         exitingInput = input;
 
-        world.updateBlockCursor(input.getMouseAction());
+        world.updateBlockCursor(input.getMouseAction(), input.getScrollOffset());
 
         if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE))
             return new PauseGameState(world, this);
