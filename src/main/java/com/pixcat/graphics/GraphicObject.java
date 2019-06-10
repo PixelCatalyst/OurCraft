@@ -1,8 +1,8 @@
 package com.pixcat.graphics;
 
 import com.pixcat.mesh.Mesh;
-import org.joml.Vector3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class GraphicObject {
     private Mesh mesh;
