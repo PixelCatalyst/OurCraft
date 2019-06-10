@@ -41,6 +41,10 @@ public class Texture {
         return height;
     }
 
+    public int getID() {
+        return ID;
+    }
+
     public void bind() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ID);

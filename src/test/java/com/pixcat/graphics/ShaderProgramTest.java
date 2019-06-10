@@ -2,10 +2,9 @@ package com.pixcat.graphics;
 
 import com.pixcat.core.FileManager;
 import org.joml.Matrix4f;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.lang.IllegalStateException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -16,15 +15,21 @@ import static org.lwjgl.opengl.GL20.GL_CURRENT_PROGRAM;
 public class ShaderProgramTest {
 
     private ShaderProgram testShader;
+    private Window placeholderWindow;
 
     @Before
     public void setUp() {
         if (glfwInit() == false)
             throw new RuntimeException("Unable to initialize GLFW");
-        Window placeholderWindow = new Window(200, 200, "placeholder");
+        placeholderWindow = new Window(200, 200, "placeholder");
         placeholderWindow.bindAsCurrent();
 
         testShader = new ShaderProgram();
+    }
+
+    @After
+    public void destroyWindow() {
+        placeholderWindow.destroy();
     }
 
     @Test
