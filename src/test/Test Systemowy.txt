@@ -1,0 +1,84 @@
+UC-01 Rozpoczêcie gry
+Gra uruchamia siê prawid³owo.
+Wyœwietla siê menu g³ówne z trzema opcjami do wyboru: "Start Game", "Continue" oraz "Exit".
+Klikniêcie w przycisk "Start game" wprowadza nas do kolejnego menu.
+Po klikniêciu na przycisk "Set world seed" pojawia siê pole tekstowe i mo¿na wprowadziæ
+tekst. Po wprowadzeniu ziarna i klikniêciu przycisku "Play!" jesteœmy przenoszeni do œwiata
+gry. Przy 3-krotnej próbie wpisania tego samego ziarna, po rozejrzeniu siê dooko³a œwiat
+wydaje siê dok³adnie taki sam jak przy poprzednich próbach.
+
+Gdy nie wprowadzamy ziarna, œwiat generuje siê po naciœnieciu przycisku "Play!".
+Jest inny za ka¿dym razem, co znaczy ¿e prawid³owo losowane jest ziarno.
+
+Tworzê ma³e zmiany w œwiecie aby sprawdziæ opcje zapisywania œwiata.
+Zapisujê grê (podczas gry klikam escape a potem klawisz "s").
+W menu g³ównym po klikniêciu opcji Continue gra wraca do tego samego œwiata, razem z 
+ma³ymi zmianami które utworzy³em (ma³y domek zbudowany z bloków ziemi).
+
+Usuwam plik zapisu (mechanicznie, z folderu gdzie s¹ zapisywane stany gry).
+W menu g³ównym nic siê nie dzieje po naciœniêciu przycisku "Continue".
+
+UC-02 Cykl gry
+Po tym, jak wygeneruje siê œwiat, wchodzê z nim w interakcjê na sposoby podane poni¿ej.
+
+UC-03 Dodanie bloku
+Gdy wzrok jest skierowany na inny blok, przy wystarczaj¹co bliskiej odleg³oœci od niego
+pojawia siê wskaŸnik. Przy klikniêciu prawego przycisku myszy w tym momencie przy 
+wskaŸniku pojawia siê nowy blok, zaœ wskaŸnik przenosi siê na miejsce dodanego bloku.
+Bloki zmieniam przy pomocy kó³ka myszy, zaœ aktualny blok pokazany jest na dole ekranu
+jak równie¿ i ich lista.
+
+Dla próby patrzê w niebo i próbujê postawiæ blok, nic siê nie dzieje a nawet nie pojawia
+siê wskaŸnik po³o¿enia nowego bloku. Oddalam siê od innych bloków patrz¹c na nie (kieruj¹c
+na nie kamerê) i po osi¹gniêciu odpowiedniej odleg³oœci znika wskaŸnik po³o¿enia nowego
+bloku.
+
+UC-04 Usuniêcie bloku
+Patrz¹c kamer¹ na pobliski blok pojawia siê na nim wskaŸnik. Po klikniêciu lewego
+przycisku myszy znika on, zaœ wskaŸnik przesuwa siê na kolejny blok na który wskazuje
+wzrok gracza. 
+Gdy nie ma wskaŸnika na ¿adnym bloku, lewy przycisk myszy nie ma ¿adnego efektu.
+
+UC-05 Poruszanie siê
+Gra obs³uguje klasyczny uk³ad sterowania "wasd". Gracz porusza siê do przodu wzglêdem
+kamery przy przycisku "W" i analogicznie w lewo, prawo i do ty³u przy przyciskach
+odpowiednio "A", "D" i "S". Po naciœniêciu spacji postaæ skacze (porusza siê w górê).
+Wysokoœæ tego skoku jest wystarczaj¹ca, by dostaæ siê na poziom jednego bloku powy¿ej
+tego, na ktorym aktualnie jesteœmy. Grawitacja dzia³a, znaczy po skoku spadamy na ten sam
+blok na którym siê znajdowaliœmy przed jego wykonianiem. Przy poruszeniu siê na miejsce
+gdzie nie ma pod nami bloku, postaæ poprawnie spada na najbli¿szy poni¿szy blok.
+
+Kolizja z obiektami jest prawid³owa, przy poruszaniu siê w kierunku ju¿ postawionych
+bloków postac zatrzymuje siê i nie jest w stanie "wejœæ w blok". Przetestowane przy ka¿dym
+rodzaju ruchu i ich kombinacjom.
+
+UC-06 Otrzymanie osi¹gniêcia
+Tworzê nowy œwiat celem sprawdzenia zdobywania osi¹gniêæ.
+Do 1 osi¹gniêcia kopiê 20 bloków ziemi (wydobywam je poprzez ich usuwanie). Po wykopaniu
+dwudziestego z nich, na ekranie pojawia siê komunikat o zdobytum osi¹gniêciu. Znika on po
+chwili (oko³o 5 sekund).
+2 osi¹gniêcie wymaga grania przez 20 minut, wiêc zostawiam dzia³aj¹c¹ grê na ten czas.
+3 osi¹gniêcie zdobywam po chwili poruszania siê w jednym kierunku œwiata gry.
+
+Spróbujê zdobyæ kilka osi¹gniêæ naraz, w tym celu ustawiam stoper na 19 minut 58 sekund,
+w tym czasie wydobywam 19 bloków ziemi i staram siê poruszyæ oko³o 45 bloków (dla pewnoœci).
+Po miniêciu wyznaczonego czasu wydobywam ostatni blok ziemi i zaczynam poruszaæ siê.
+Osi¹gniêcia pojawiaj¹ siê jeden po drugim na ekranie i znikaj¹ niezale¿nie od siebie po
+chwili.
+
+UC-07 Zmiana pory dnia
+Po stworzeniu œwiata gry niebo wskazuje na dzieñ. Ustawiam stoper na 10 minut i czekam.
+Po up³yniêciu tego czasu niebo zmienia swój kolor na du¿o ciemniejszy i ca³y œwiat jest 
+mniej oœwietlony. Powtarzam t¹ akcjê jeszcze kilka razy, by sprawdziæ czy poprawnie 
+dzieñ zmienia siê w noc i na odwrót.
+
+UC-08
+Po naciœniêciu klawisza "Escape" podczas gry, na œrodku ekranu pojawia siê okienko "Pause"
+na którym wypisane s¹ nasze opcje. 
+Po ponownym naciœniêciu "Escape" gra przenosi siê do menu g³ównego i nie jest zapisana,
+bo przycisk "Continue" nie dzia³a.
+Po ponownym naciœniêciu "S" gra przenosi siê do menu g³ównego. Po naciœniêciu przycisku 
+"Continue" wracamy do naszego zapisanego stanu gry.
+Gdy nacisnê cokolwiek innego, gra siê kontynuuje.
+
+
