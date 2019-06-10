@@ -123,7 +123,7 @@ public class Renderer {
         }
     }
 
-    private void drawMesh(Mesh toDraw) {
+    public void drawMesh(Mesh toDraw) {
         glBindVertexArray(toDraw.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
