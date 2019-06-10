@@ -26,8 +26,8 @@ public class GraphicBatch {
         return objects.size();
     }
 
-    public void addObject(GraphicObject g) {
-        objects.add(g);
+    public void addObject(GraphicObject object) {
+        objects.add(object);
     }
 
     public void bakeTextures() {
@@ -38,12 +38,16 @@ public class GraphicBatch {
             textureChanges.add(0);
             for (int i = 1; i < objects.size(); ++i) {
                 Texture otherTex = objects.get(i).getTexture();
-                if (currTex.equals(otherTex) == false) {
+                if ((currTex != null) && currTex.equals(otherTex) == false) {
                     textureChanges.add(i);
                     currTex = otherTex;
                 }
             }
         }
+    }
+
+    public int getTextureChangesCount() {
+        return textureChanges.size();
     }
 
     public void beginIteration() {
@@ -100,8 +104,10 @@ public class GraphicBatch {
     }
 
     public void cleanup() {
-        for (GraphicObject object : objects)
-            object.cleanup();
+        for (GraphicObject object : objects) {
+            if (object != null)
+                object.cleanup();
+        }
         objects.clear();
         iterator = 0;
     }

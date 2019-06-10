@@ -38,6 +38,8 @@ public class GraphicObject {
     }
 
     public int compareTextures(GraphicObject other) {
+        if (this.texture == null)
+            return 0;
         return this.texture.compareID(other.texture);
     }
 
