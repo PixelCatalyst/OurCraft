@@ -95,9 +95,8 @@ public class Camera {
 
     public ArrayList<Chunk> getVisibleChunks(SpatialStructure voxels) {
         visibleChunks.clear();
-        //TODO Frustum Culling
-
-        voxels.getAll(visibleChunks);
+        if (voxels != null)
+            voxels.getAll(visibleChunks);
         return visibleChunks;
     }
 
