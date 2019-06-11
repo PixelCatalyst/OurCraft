@@ -22,9 +22,9 @@ import static org.lwjgl.glfw.GLFW.*;
 public class World implements Subject {
     private Camera playerCamera;
     private final float playerHeight;
-    private Metrics playerMetrics;
+    Metrics playerMetrics;
     private TerrainGenerator terrainGen;
-    private SpatialStructure voxels;
+    SpatialStructure voxels;
     private BlockCursor blockCursor;
     private Mesher mesher;
     private String seed;
@@ -35,7 +35,7 @@ public class World implements Subject {
     private Vector2i playerChunkColumn;
     private Vector4i chunkArea;
 
-    private ArrayList<Observer> observers;
+    ArrayList<Observer> observers;
 
     public World() {
         playerCamera = new Camera(0, 0, 0);
