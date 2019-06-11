@@ -172,6 +172,7 @@ public class FileManager {
             byte[] seedBytes = new byte[seedLength];
             inStream.read(seedBytes);
             info.seed = new String(seedBytes);
+            inStream.close();
         } catch (IOException exp) {
             exp.printStackTrace();
         }
