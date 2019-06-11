@@ -145,6 +145,8 @@ public class World implements Subject {
                     voxels.putChunk(y, x, z, currColumn[y]);
             }
         }
+
+        //noinspection SuspiciousNameCombination
         chunkArea = new Vector4i(xPlaneMin, xPlaneMax, zPlaneMin, zPlaneMax);
     }
 
@@ -163,7 +165,7 @@ public class World implements Subject {
             deltaX = deltaX * (maxLength / length);
             deltaY = deltaY * (maxLength / length);
         }
-        final float turnSpeed = 60.0f;
+        final float turnSpeed = 28.0f;
         final float maxFrameTime = 1.0f / 15.0f;
         float deltaAxisX = deltaY * turnSpeed * Math.min(timeStep, maxFrameTime);
         float deltaAxisY = deltaX * turnSpeed * Math.min(timeStep, maxFrameTime);
@@ -172,11 +174,11 @@ public class World implements Subject {
 
     public void movePlayer(InputBuffer input, float timeStep) {
         final float moveSpeed = 3.2f;
-        final float jumpSpeed = 6.0f;
+        final float jumpSpeed = 6.0f * 0.0154f;
         final float maxFrameTime = 1.0f / 15.0f;
         timeStep = Math.min(timeStep, maxFrameTime);
         Vector3f originalPosition = playerCamera.getPosition();
-        float gravity = -0.2f * timeStep;
+        float gravity = -9.2f * 0.0166f * 0.0166f;
         velocity += gravity;
         playerCamera.movePosition(0.0f, velocity, 0.0f);
 
@@ -191,7 +193,7 @@ public class World implements Subject {
             playerCamera.movePosition(moveSpeed * timeStep, 0, 0);
 
         if (input.isKeyboardKeyDown(GLFW_KEY_SPACE) || jumping) {
-            playerCamera.movePosition(0, jumpSpeed * timeStep, 0);
+            playerCamera.movePosition(0, jumpSpeed, 0);
             jumping = true;
         }
 
