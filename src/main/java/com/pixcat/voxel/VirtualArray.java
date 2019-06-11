@@ -149,5 +149,7 @@ public class VirtualArray implements SpatialStructure {
             Block block = getVoxelFromID(typeID);
             block.cleanup();
         }
+        voxelTypes.clear();
+        chunks.clear();
     }
 }
