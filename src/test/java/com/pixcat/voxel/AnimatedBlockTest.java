@@ -17,6 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 public class AnimatedBlockTest {
     private Window placeholderWindow;
     private Texture firstFrame;
+    private Texture secondFrame;
 
     @Before
     public void setUp() {
@@ -25,6 +26,7 @@ public class AnimatedBlockTest {
         placeholderWindow = new Window(100, 100, "placeholder");
         placeholderWindow.bindAsCurrent();
         firstFrame = FileManager.getInstance().loadTexture("water.png");
+        secondFrame = FileManager.getInstance().loadTexture("water1.png");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -37,11 +39,11 @@ public class AnimatedBlockTest {
         new AnimatedBlock((byte) 1, null, firstFrame, 1.0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreationWithNullTexture() {
         new AnimatedBlock((byte) 1, "name", null, 1.0);
     }
-    // Should be some kind of block for secondsPerFrame <= 0
+
     @Test
     public void testCreationWithZeroSecondsPerFrame() {
         new AnimatedBlock((byte) 1, "name", firstFrame, 0.0);
@@ -66,20 +68,15 @@ public class AnimatedBlockTest {
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         AnimatedBlock testBlock1 = new AnimatedBlock((byte) 1, "name", firstFrame, 1.0);
+        testBlock1.addFrame(secondFrame);
         AnimatedBlock testBlock2 = new AnimatedBlock((byte) 1, "name", firstFrame, 1.0);
         testBlock1.update(1.0);
-        assertEquals(testBlock1.getTexture(), testBlock2.getTexture()); //not working (not addding more frames)
+        assertNotEquals(testBlock1.getTexture(), testBlock2.getTexture());
         assertTrue(testBlock1.getAccumulatedTime() == 0.0);
-        assertTrue(testBlock1.getCurrentFrameIndex() == 1); //same as above
+        assertTrue(testBlock1.getCurrentFrameIndex() == 1);
     }
-
-    @Test
-    public void testEqualsHashCode() {
-        EqualsVerifier.forClass(AnimatedBlock.class).verify();
-    }
-
 
     @After
     public void tearDown() {

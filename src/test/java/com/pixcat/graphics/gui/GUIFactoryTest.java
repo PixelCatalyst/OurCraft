@@ -57,9 +57,10 @@ public class GUIFactoryTest {
 
     @Test
     public void testCleanup() {
+        int refCountPrev = testGUI.modelMesh.getReferenceCount();
         testGUI.cleanup();
 
-        assertEquals(0, testGUI.modelMesh.getReferenceCount());
+        assertEquals(1, refCountPrev - testGUI.modelMesh.getReferenceCount());
     }
 
     @Test

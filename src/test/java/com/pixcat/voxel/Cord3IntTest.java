@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class Cord3IntTest {
+public final class Cord3IntTest {
 
     @Test
     public void testValidCreation(){

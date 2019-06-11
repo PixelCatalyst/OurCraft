@@ -38,17 +38,17 @@ public class SolidBlock implements Block {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof SolidBlock))
             return false;
         SolidBlock that = (SolidBlock) o;
         return (ID == that.ID) || Objects.equals(name, that.name);
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(ID);
     }
 
