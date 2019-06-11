@@ -6,7 +6,7 @@ import com.pixcat.mesh.Mesh;
 public class GUIFactory {
     private static GUIFactory instance = null;
 
-    private Mesh modelMesh;
+    Mesh modelMesh;
 
     private GUIFactory() {
         float[] positions = new float[]{
