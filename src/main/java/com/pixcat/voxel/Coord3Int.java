@@ -2,7 +2,7 @@ package com.pixcat.voxel;
 
 import java.util.Objects;
 
-public class Coord3Int {
+public final class Coord3Int {
     public final int y;
     public final int x;
     public final int z;

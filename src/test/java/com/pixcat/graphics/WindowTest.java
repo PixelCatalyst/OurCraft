@@ -58,12 +58,12 @@ public class WindowTest {
     public void testValidCreation() {
         if (glfwInit() == false)
             throw new RuntimeException("Unable to initialize GLFW");
-        window = new Window(100, 100, "window");
+        window = new Window(200, 100, "window");
         window.bindAsCurrent();
         assertTrue(window.isOpen());
         assertTrue(window.getHandle() != 0);
         assertTrue(window.getHeight() == 100);
-        assertTrue(window.getWidth() == window.getHeight() * window.getAspectRatio());
+        assertTrue((float) window.getWidth() == (window.getHeight() * window.getAspectRatio()));
     }
 
     @Test
