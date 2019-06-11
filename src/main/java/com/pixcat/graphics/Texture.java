@@ -16,6 +16,13 @@ public class Texture {
         this.height = height;
     }
 
+    public Texture(Texture other) {
+        referenceCount = Integer.MIN_VALUE;
+        this.ID = other.ID;
+        this.width = other.width;
+        this.height = other.height;
+    }
+
     public static Texture createFromBytes(ByteBuffer buffer, int width, int height) {
         int textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureID);
@@ -47,6 +54,10 @@ public class Texture {
 
     public int getID() {
         return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public void bind() {

@@ -28,7 +28,7 @@ public class AnimatedBlock extends SolidBlock {
     }
 
     public AnimatedBlock(byte ID, String name, Texture firstFrame, double secondsPerFrame) {
-        super(ID, name, firstFrame);
+        super(ID, name, new Texture(firstFrame));
         frames = new ArrayList<>();
         addFrame(firstFrame);
         this.secondsPerFrame = Math.abs(secondsPerFrame);
@@ -47,7 +47,7 @@ public class AnimatedBlock extends SolidBlock {
             int frameDelta = (int) (accumulatedTime / secondsPerFrame);
             accumulatedTime -= frameDelta * secondsPerFrame;
             currentFrameIndex = (currentFrameIndex + frameDelta) % frames.size();
-            texture = frames.get(currentFrameIndex);
+            texture.setID(frames.get(currentFrameIndex).getID());
         }
     }
 
