@@ -4,6 +4,7 @@ import com.pixcat.core.FileManager;
 import com.pixcat.core.InputBuffer;
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
+import com.pixcat.graphics.Texture;
 import com.pixcat.graphics.gui.GUIFactory;
 import com.pixcat.graphics.gui.Menu;
 import com.pixcat.graphics.gui.StaticImage;
@@ -17,6 +18,10 @@ public class MenuGameState implements GameState {
 
     public MenuGameState(World world) {
         this.world = world;
+    }
+
+    public MenuGameState() {
+        this.world = new World();
     }
 
     @Override
@@ -45,8 +50,16 @@ public class MenuGameState implements GameState {
         mainMenu.updateInput(input);
         if (mainMenu.buttonWasClicked("start"))
             return new StartGameState(world);
-        if (mainMenu.buttonWasClicked("continue"))
-            return new PlayGameState(world); //TODO load saved world
+        if (mainMenu.buttonWasClicked("continue")) {
+            FileManager fm = FileManager.getInstance();
+            if (fm.existSavedWorld()) {
+                world.restore(fm.loadWorldInfo());
+                return new PlayGameState(world);
+            } else {
+                Texture noSavedGamesTexture = fm.loadTexture("no_saved_games.png");
+                mainMenu.getButtonByName("continue").setTexture(noSavedGamesTexture);
+            }
+        }
         if (mainMenu.buttonWasClicked("exit"))
             return null;
 

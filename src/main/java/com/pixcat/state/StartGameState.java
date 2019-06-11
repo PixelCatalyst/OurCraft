@@ -54,6 +54,7 @@ public class StartGameState implements GameState {
             if (startMenu.buttonWasClicked("seed"))
                 dialog.start();
             if (startMenu.buttonWasClicked("play")) {
+                FileManager.getInstance().clearSaves();
                 String userWorldSeed = dialog.result;
                 if (userWorldSeed == null)
                     userWorldSeed = generateRandomString();

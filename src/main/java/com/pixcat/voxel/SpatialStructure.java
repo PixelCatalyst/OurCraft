@@ -25,4 +25,6 @@ public interface SpatialStructure {
     int getDiameter();
 
     int getHeight();
+
+    void cleanup();
 }

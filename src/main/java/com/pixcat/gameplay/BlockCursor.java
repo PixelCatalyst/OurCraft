@@ -27,8 +27,8 @@ public class BlockCursor {
     private StaticImage materialImg;
     private StaticImage selectionImg;
     private StaticImage borderImg;
+
     private final int tileSize = 72;
-    private final int borderSize = 2;
 
     private byte pickedID;
     private int typeIndex;
@@ -88,6 +88,17 @@ public class BlockCursor {
         borderImg = gui.makeImage(fm.loadTexture("border.png"), null, null);
     }
 
+    public byte getPickedID() {
+        return pickedID;
+    }
+
+    public int getTypeIndex() {
+        return typeIndex;
+    }
+
+    public byte getCurrentID() {
+        return currentID;
+    }
 
     public void scrollType(int scrollOffset, SpatialStructure voxels) {
         typeIndex = Math.floorMod(typeIndex + scrollOffset, voxels.getTypeCount());
@@ -220,6 +231,7 @@ public class BlockCursor {
         int barWidth = voxels.getTypeCount() * tileSize;
         int offsetX = (windowWidth - barWidth) / 2;
 
+        final int borderSize = 2;
         borderImg.setSize(barWidth + 2 * borderSize, tileSize + borderSize);
         borderImg.setPosition(offsetX - borderSize, windowHeight - tileSize - borderSize);
         renderer.draw(borderImg);

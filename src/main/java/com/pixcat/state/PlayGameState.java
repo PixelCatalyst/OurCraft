@@ -76,6 +76,7 @@ public class PlayGameState implements GameState {
     @Override
     public void onEnter(Renderer renderer) {
         isEntering = true;
+        lastMousePosition = null;
     }
 
     @Override

@@ -52,6 +52,7 @@ public class SolidBlock implements Block {
         return Objects.hash(ID);
     }
 
+    @Override
     public void cleanup() {
         texture.cleanup();
     }

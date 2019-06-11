@@ -1,5 +1,7 @@
 package com.pixcat.voxel;
 
+import com.pixcat.core.FileManager;
+
 import java.util.*;
 
 public class VirtualArray implements SpatialStructure {
@@ -15,10 +17,9 @@ public class VirtualArray implements SpatialStructure {
         this.height = 8;
     }
 
-    public void getAll(ArrayList<Chunk> vis) {
-        long i = 0;
+    public void getAll(ArrayList<Chunk> visible) {
         for (Map.Entry<Coord3Int, Chunk> pair : chunks.entrySet()) {
-            vis.add(pair.getValue());
+            visible.add(pair.getValue());
         }
     }
 
@@ -68,6 +69,7 @@ public class VirtualArray implements SpatialStructure {
         Chunk updatedChunk = chunks.get(chunkCoord);
         if (updatedChunk != null) {
             updatedChunk.scheduleForRebuild();
+            FileManager.getInstance().serializeChunkToDisk(updatedChunk);
 
             final int maxIndex = Chunk.getSize() - 1;
             if (voxelY == 0)
@@ -136,5 +138,16 @@ public class VirtualArray implements SpatialStructure {
 
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public void cleanup() {
+        for (Map.Entry<Coord3Int, Chunk> pair : chunks.entrySet())
+            pair.getValue().cleanup();
+        for (int i = 0; i < voxelTypes.size(); ++i) {
+            byte typeID = getTypeID(i);
+            Block block = getVoxelFromID(typeID);
+            block.cleanup();
+        }
     }
 }

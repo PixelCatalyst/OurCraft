@@ -1,6 +1,5 @@
 package com.pixcat.core;
 
-import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
 import com.pixcat.graphics.gui.GUIFactory;
 import com.pixcat.state.GameState;
@@ -12,7 +11,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Game {
     private Renderer renderer;
     private InputBuffer input;
-    private World world;
     private Timer timer;
     private GameState currentState;
 
@@ -29,9 +27,8 @@ public class Game {
         renderer.centerWindow();
         renderer.initAssets();
         input = new InputBuffer(renderer.getWindowHandle());
-        world = new World();
         timer = new Timer();
-        currentState = new MenuGameState(world);
+        currentState = new MenuGameState();
         currentState.onEnter(renderer);
     }
 

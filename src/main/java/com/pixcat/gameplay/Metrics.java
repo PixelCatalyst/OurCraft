@@ -20,6 +20,13 @@ public class Metrics implements SubjectStatus {
         this.blocksWalked = other.blocksWalked;
     }
 
+    public Metrics(double secondsInGame, int dirtBlocksDug, float blocksWalked) {
+        initialStateFlag = true;
+        this.secondsInGame = secondsInGame;
+        this.dirtBlocksDug = dirtBlocksDug;
+        this.blocksWalked = blocksWalked;
+    }
+
     public boolean isInitialState() {
         return initialStateFlag;
     }

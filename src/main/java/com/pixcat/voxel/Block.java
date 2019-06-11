@@ -13,4 +13,6 @@ public interface Block {
     default void update(double elapsedTime) {
         //Do nothing
     }
+
+    void cleanup();
 }

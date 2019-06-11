@@ -49,8 +49,12 @@ public class TerrainGenerator {
 
     public int fillColumn(Chunk[] column, int x, int z) {
         int heightAtFirstBlock = 0;
-        for (int i = 0; i < heightInChunks; ++i)
-            column[i] = new ArrayChunk();
+        boolean[] maskIndexes = new boolean[column.length];
+        for (int i = 0; i < heightInChunks; ++i) {
+            maskIndexes[i] = (column[i] == null);
+            if (column[i] == null)
+                column[i] = new ArrayChunk();
+        }
 
         for (int chunkX = x; chunkX < (x + Chunk.getSize()); ++chunkX) {
             for (int chunkZ = z; chunkZ < (z + Chunk.getSize()); ++chunkZ) {
@@ -60,8 +64,6 @@ public class TerrainGenerator {
                 int waterHeight = 0;
                 if (groundHeight < 53)
                     waterHeight = 53 - groundHeight;
-                if (xRelative == 1 && zRelative == 1)
-                    heightAtFirstBlock = groundHeight + waterHeight + 1;
 
                 int grassHeight = (waterHeight > 0 ? 0 : 1);
                 int dirtHeight = 4;
@@ -75,7 +77,8 @@ public class TerrainGenerator {
                         ID = 2;
                     else if (dirtHeight-- > 0)
                         ID = 1;
-                    column[chunkIndex].setVoxelID(voxelIndex, xRelative, zRelative, ID);
+                    if (maskIndexes[chunkIndex])
+                        column[chunkIndex].setVoxelID(voxelIndex, xRelative, zRelative, ID);
                 }
 
                 int maxIndex = Chunk.getSize() - 1;
@@ -83,7 +86,19 @@ public class TerrainGenerator {
                 if ((xRelative > 0) && (xRelative < maxIndex) && (zRelative > 0) && (zRelative < maxIndex))
                     treePresent = isTreeAt(chunkX, chunkZ);
                 if (treePresent)
-                    createTree(column, groundHeight, xRelative, zRelative);
+                    createTree(column, maskIndexes, groundHeight, xRelative, zRelative);
+
+                if (xRelative == 1 && zRelative == 1) {
+                    for (int y = heightInBlocks - 1; y >= 0; --y) {
+                        int chunkIndex = y / Chunk.getSize();
+                        int voxelIndex = y - (chunkIndex * Chunk.getSize());
+                        byte ID = column[chunkIndex].getVoxelID(voxelIndex, xRelative, zRelative);
+                        if (ID != 0) {
+                            heightAtFirstBlock = y + 1;
+                            break;
+                        }
+                    }
+                }
             }
         }
         return heightAtFirstBlock;
@@ -231,7 +246,7 @@ public class TerrainGenerator {
             return 0.0001;
     }
 
-    private void createTree(Chunk[] column, int groundHeight, int xRelative, int zRelative) {
+    private void createTree(Chunk[] column, boolean[] maskIndexes, int groundHeight, int xRelative, int zRelative) {
         int chunkIndex = groundHeight / Chunk.getSize();
         int yRelative = groundHeight - (chunkIndex * Chunk.getSize());
         byte currentVoxelID = (byte) 5;
@@ -244,7 +259,8 @@ public class TerrainGenerator {
             }
             xRelative += nextBlock.x;
             zRelative += nextBlock.z;
-            column[chunkIndex].setVoxelID(yRelative, xRelative, zRelative, currentVoxelID);
+            if (maskIndexes[chunkIndex])
+                column[chunkIndex].setVoxelID(yRelative, xRelative, zRelative, currentVoxelID);
             height += nextBlock.y;
             if (height == treeTrunkHeight)
                 currentVoxelID = (byte) 6;

@@ -33,7 +33,7 @@ public class AnimatedBlock extends SolidBlock {
         addFrame(firstFrame);
         this.secondsPerFrame = Math.abs(secondsPerFrame);
         accumulatedTime = 0.0;
-        currentFrameIndex = 0; // added
+        currentFrameIndex = 0;
     }
 
     public void addFrame(Texture frameTexture) {
@@ -41,7 +41,7 @@ public class AnimatedBlock extends SolidBlock {
         frameTexture.addReference();
     }
 
-    public void update(double elapsedTime) { //prob need to add more textures with that addFrame()
+    public void update(double elapsedTime) {
         accumulatedTime += elapsedTime;
         if (accumulatedTime >= secondsPerFrame) {
             int frameDelta = (int) (accumulatedTime / secondsPerFrame);
@@ -51,6 +51,7 @@ public class AnimatedBlock extends SolidBlock {
         }
     }
 
+    @Override
     public void cleanup() {
         for (Texture tex : frames)
             tex.cleanup();
