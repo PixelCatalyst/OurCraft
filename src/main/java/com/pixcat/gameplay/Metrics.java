@@ -1,18 +1,23 @@
 package com.pixcat.gameplay;
 
+import org.joml.Vector3f;
+
 public class Metrics implements SubjectStatus {
-    boolean initialStateFlag;
-    double secondsInGame;
+    private boolean initialStateFlag;
+
+    private double secondsInGame;
+    private int dirtBlocksDug;
+    private float blocksWalked;
 
     public Metrics() {
         initialStateFlag = true;
-        secondsInGame = 0.0f;
-        //TODO rest of params
     }
 
     public Metrics(Metrics other) {
-        initialStateFlag = true;
-        //TODO copy constructor
+        this.initialStateFlag = other.initialStateFlag;
+        this.secondsInGame = other.secondsInGame;
+        this.dirtBlocksDug = other.dirtBlocksDug;
+        this.blocksWalked = other.blocksWalked;
     }
 
     public boolean isInitialState() {
@@ -25,5 +30,30 @@ public class Metrics implements SubjectStatus {
 
     public void addSecondsInGame(double secondsToAdd) {
         this.secondsInGame += secondsToAdd;
+        initialStateFlag = false;
+    }
+
+    public int getDirtBlocksDug() {
+        return dirtBlocksDug;
+    }
+
+    public void addDugBlock(byte blockID) {
+        final byte dirtID = 1;
+        if (blockID == dirtID) {
+            ++dirtBlocksDug;
+            initialStateFlag = false;
+        }
+    }
+
+    public float getBlocksWalked() {
+        return blocksWalked;
+    }
+
+    public void addPositionChange(Vector3f positionChange) {
+        Vector3f localPositionChange = new Vector3f(positionChange.x, 0.0f, positionChange.z);
+        float distance = localPositionChange.length();
+        blocksWalked += distance;
+        if (distance > 0.0f)
+            initialStateFlag = false;
     }
 }

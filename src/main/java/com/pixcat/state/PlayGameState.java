@@ -2,31 +2,28 @@ package com.pixcat.state;
 
 import com.pixcat.core.InputBuffer;
 import com.pixcat.gameplay.Achievements;
-import com.pixcat.gameplay.Camera;
 import com.pixcat.gameplay.World;
 import com.pixcat.graphics.Renderer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class PlayGameState implements GameState {
     private World world;
     private Achievements achievements;
-    boolean isEntering;
-    InputBuffer exitingInput;
+    private boolean isEntering;
+    private InputBuffer exitingInput;
 
-    private Camera testCam; //TODO temporary
     private float lastTimeStep;
     private Vector2f lastMousePosition;
 
     public PlayGameState(World world) {
         this.world = world;
         achievements = new Achievements();
-        isEntering = false;
 
-        //TODO achievement initial state
         world.addObserver(achievements);
+        world.notifyAllObservers();
     }
 
     @Override
@@ -40,7 +37,7 @@ public class PlayGameState implements GameState {
         renderer.setOrthographic();
         world.drawStatusBar(renderer);
 
-        //TODO render awarded achievements
+        achievements.draw(renderer);
     }
 
     @Override
@@ -69,16 +66,16 @@ public class PlayGameState implements GameState {
 
     @Override
     public void update(double elapsedTime) {
+        achievements.updateTimeToLive(elapsedTime);
         world.addGameTime(elapsedTime);
         world.updateChunks();
+        world.notifyAllObservers();
         lastTimeStep = (float) elapsedTime;
     }
 
     @Override
     public void onEnter(Renderer renderer) {
         isEntering = true;
-
-        testCam = world.getPlayerCamera();
     }
 
     @Override

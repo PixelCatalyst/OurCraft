@@ -107,7 +107,7 @@ public class World implements Subject {
     }
 
     private void initPlayerPosition(int height) {
-        Vector3f playerPos = new Vector3f(1.5f, (float) height + playerHeight, 1.5f);
+        Vector3f playerPos = new Vector3f(1.5f, (float) height + playerHeight + 0.1f, 1.5f);
         playerCamera.setPosition(playerPos.x, playerPos.y, playerPos.z);
         playerChunkColumn = new Vector2i(
                 (int) Math.ceil(playerPos.x) / Chunk.getSize(),
@@ -175,7 +175,7 @@ public class World implements Subject {
         Vector3f positionChange = playerCamera.getPosition()
                 .sub(originalPosition)
                 .absolute();
-        //TODO positionChange -> achievements
+        playerMetrics.addPositionChange(positionChange);
     }
 
     private boolean isCollisionAt(Vector3f playerPosition) {
@@ -310,7 +310,7 @@ public class World implements Subject {
         if (mouseAction.getEvent() == MouseAction.Event.PRESS) {
             if (mouseAction.getButton() == MouseAction.Button.LEFT) {
                 byte deletedBlockID = blockCursor.deleteCurrentBlock(voxels);
-                //TODO ID -> achievements
+                playerMetrics.addDugBlock(deletedBlockID);
             } else if (mouseAction.getButton() == MouseAction.Button.RIGHT)
                 blockCursor.placeNewBlock(voxels);
         }
