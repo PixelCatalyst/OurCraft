@@ -9,7 +9,6 @@ import com.pixcat.graphics.gui.Menu;
 import com.pixcat.graphics.gui.StaticImage;
 
 import javax.swing.*;
-import java.nio.charset.Charset;
 import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
@@ -98,9 +97,15 @@ public class StartGameState implements GameState {
         final int minLength = 16;
         final int maxLength = 32;
         final int length = (random.nextInt(maxLength)) + minLength;
-        byte[] bytesForString = new byte[length];
-        random.nextBytes(bytesForString);
-        return new String(bytesForString, Charset.forName("UTF-8"));
+        StringBuilder builder = new StringBuilder(length);
+        String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "0123456789" +
+                "abcdefghijklmnopqrstuvxyz";
+        for (int i = 0; i < length; ++i) {
+            int index = (int) (alphaNumericString.length() * Math.random());
+            builder.append(alphaNumericString.charAt(index));
+        }
+        return builder.toString();
     }
 
     @Override
