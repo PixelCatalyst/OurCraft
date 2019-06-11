@@ -42,10 +42,11 @@ public class PauseGameState implements GameState {
     public GameState handleInput(InputBuffer input) {
         if (input.isKeyboardKeyDown(GLFW_KEY_ESCAPE)) {
             FileManager.getInstance().clearSaves();
+            world.cleanup();
             return new MenuGameState();
-        }
-        else if (input.isKeyboardKeyDown(GLFW_KEY_S)) {
+        } else if (input.isKeyboardKeyDown(GLFW_KEY_S)) {
             world.save();
+            world.cleanup();
             return new MenuGameState();
         } else if (input.isAnyKeyboardKeyDown())
             return pausedGame;
@@ -65,6 +66,5 @@ public class PauseGameState implements GameState {
     @Override
     public void onExit(Renderer renderer) {
         infoScreen.cleanup();
-        world.cleanup();
     }
 }
