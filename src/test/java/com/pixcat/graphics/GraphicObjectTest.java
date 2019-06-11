@@ -13,7 +13,7 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public class GraphicObjectTest {
     private GraphicObject testObject;
-    Window placeholderWindow;
+    private Window placeholderWindow;
     private Mesh placeholderMesh;
 
     @Before
@@ -123,5 +123,11 @@ public class GraphicObjectTest {
         assertNull(testObject.getWorldMatrix());
 
         assertNull(testObject.getPosition()); //throw null pointer exception
+    }
+
+    @After
+    public void tearDown() {
+        placeholderMesh.cleanup();
+        placeholderWindow.destroy();
     }
 }
