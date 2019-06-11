@@ -42,7 +42,7 @@ public class TerrainGenerator {
         };
     }
 
-    public void setSeed(int seed) {
+    private void setSeed(int seed) {
         primaryNoise = new SimplexNoise(seed);
         secondaryNoise = new SimplexNoise((seed * 2) + (seed / 1000) + 11);
     }
@@ -249,7 +249,7 @@ public class TerrainGenerator {
     private void createTree(Chunk[] column, boolean[] maskIndexes, int groundHeight, int xRelative, int zRelative) {
         int chunkIndex = groundHeight / Chunk.getSize();
         int yRelative = groundHeight - (chunkIndex * Chunk.getSize());
-        byte currentVoxelID = (byte) 5;
+        byte currentVoxelID = (byte) 5; //log
         int height = 0;
         for (Vector3i nextBlock : treeModel) {
             yRelative += nextBlock.y;
@@ -263,7 +263,7 @@ public class TerrainGenerator {
                 column[chunkIndex].setVoxelID(yRelative, xRelative, zRelative, currentVoxelID);
             height += nextBlock.y;
             if (height == treeTrunkHeight)
-                currentVoxelID = (byte) 6;
+                currentVoxelID = (byte) 6; //leaves
         }
     }
 }
