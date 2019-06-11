@@ -99,7 +99,7 @@ public class GreedyMesher implements Mesher {
                             else
                                 secondFace = null;
 
-                            if (firstFace != null && secondFace != null && firstFace.equals(secondFace))
+                            if ((firstFace != null) && (secondFace != null) && firstFace.equals(secondFace))
                                 mask[n] = null;
                             else
                                 mask[n] = (backFace ? secondFace : firstFace);
@@ -146,8 +146,8 @@ public class GreedyMesher implements Mesher {
 
                                     assembleVertices(x, du, dv);
                                     assembleTexCoords((float) width, (float) height, side);
-                                    GraphicObject obj = createQuad(mask[n], backFace, materials);
-                                    batch.addObject(obj);
+                                    GraphicObject quad = createQuad(mask[n], backFace, materials);
+                                    batch.addObject(quad);
                                 }
 
                                 for (int m = 0; m < height; ++m) {
