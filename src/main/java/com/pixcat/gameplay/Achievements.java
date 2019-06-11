@@ -23,7 +23,7 @@ public class Achievements implements Observer {
         }
     }
 
-    private Queue<AwardImage> awardQueue;
+    Queue<AwardImage> awardQueue;
 
     private final int dirtCriterion;
     private final double dayCriterion;
@@ -81,7 +81,7 @@ public class Achievements implements Observer {
             AwardImage currentAward = awardQueue.peek();
             if (currentAward.TTL > 0.0)
                 currentAward.TTL -= elapsedTime;
-            else
+            if (currentAward.TTL <= 0.0)
                 awardQueue.poll();
         }
     }
