@@ -22,7 +22,7 @@ public class BlockCursor {
     private Vector3i previousVoxelPos;
     private boolean traversedEmpty;
 
-    private GraphicObject indicationBox;
+    GraphicObject indicationBox;
     private StaticImage crosshair;
     private StaticImage materialImg;
     private StaticImage selectionImg;
