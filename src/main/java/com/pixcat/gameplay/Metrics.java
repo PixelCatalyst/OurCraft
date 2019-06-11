@@ -36,7 +36,7 @@ public class Metrics implements SubjectStatus {
     }
 
     public void addSecondsInGame(double secondsToAdd) {
-        this.secondsInGame += secondsToAdd;
+        this.secondsInGame += Math.max(secondsToAdd, 0.0);
         initialStateFlag = false;
     }
 
