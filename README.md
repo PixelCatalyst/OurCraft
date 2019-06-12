@@ -1,7 +1,7 @@
 # OurCraft
 Minecraft clone developed for software engineering course. Written in Java using LWJGL library with OpenGL bindings and JOML library for matrix transformations.
 
-## Fetures:
+## Features:
  * auto generated terrain with rivers and oceans
  * option to pass random seed to world generator
  * static and animated block textures
